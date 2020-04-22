@@ -39,7 +39,7 @@ namespace SysInventory.LogMessages.ViewModels
             if (string.IsNullOrWhiteSpace(Settings.Default.ConnectionString))
             {
                 Settings.Default.ConnectionString =
-                    "Data Source=EPICPCGAEBSTER;Initial Catalog=SysInventory;User ID=sa;Password=FCBasel1893.";
+                    "Data Source=EPICPCGAEBSTER;Initial Catalog=SysInventory;User ID=user;Password=pw";
                 Settings.Default.Save();
             }
             ConnectionString = Settings.Default.ConnectionString;
