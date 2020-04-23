@@ -52,6 +52,7 @@ namespace SysInventory.LogMessages.ViewModels
         {
             try
             {
+                Settings.Default.ConnectionString = ConnectionString;
                 LogMessages.Clear();
                 using (var connection = new SqlConnection(ConnectionString))
                 {
@@ -110,6 +111,7 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void OpenAddDialog()
         {
+            Settings.Default.ConnectionString = ConnectionString;
             new AddDialog().ShowDialog();
             LoadData();
         }
