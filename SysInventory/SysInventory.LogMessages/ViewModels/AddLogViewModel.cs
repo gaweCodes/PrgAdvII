@@ -72,7 +72,11 @@ namespace SysInventory.LogMessages.ViewModels
                         cmd.Parameters.AddWithValue("@hostname", Hostname);
                         cmd.Parameters.AddWithValue("@lvl", Severity);
                         cmd.Parameters.AddWithValue("@msg", Message);
-                        cmd.ExecuteNonQuery();
+                        if (cmd.ExecuteNonQuery() == -1)
+                        {
+                            MessageBox.Show("The device or pod was not found.");
+                            return;
+                        }
                     }
                 }
                 windoToClose?.Close();
