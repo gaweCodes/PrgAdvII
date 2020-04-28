@@ -19,10 +19,7 @@ namespace OverridingEquals
             return Equals(First, other.First) && Equals(Second, other.Second) ||
                    Equals(First, other.Second) && Equals(Second, other.First);
         }
-
-        public override int GetHashCode() => (!ReferenceEquals(null, First) ? First.GetHashCode() : 0) +
-                                             (!ReferenceEquals(null, Second) ? Second.GetHashCode() : 0);
-
+        public override int GetHashCode() => (First?.GetHashCode() ?? 0) + (Second?.GetHashCode() ?? 0);
         public static bool operator ==(UnorderedPair pair1, UnorderedPair pair2)
         {
             if (ReferenceEquals(pair1, pair2))

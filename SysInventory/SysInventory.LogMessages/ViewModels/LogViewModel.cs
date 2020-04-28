@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows;
+using DuplicateCheckerLib;
 using SysInventory.LogMessages.Models;
 using SysInventory.LogMessages.Properties;
 
@@ -11,16 +13,18 @@ namespace SysInventory.LogMessages.ViewModels
     internal class LogViewModel
     {
         public RelayCommand LoadDataCommand { get; }
+        public RelayCommand FindDuplicatesCommand { get; }
         public RelayCommand ConfirmCommand { get; }
         public RelayCommand AddCommand { get; }
         private string _connectionString;
-        public string ConnectionString 
-        { 
+        public string ConnectionString
+        {
             get => _connectionString;
-            set 
-            { 
+            set
+            {
                 _connectionString = value;
                 LoadDataCommand?.RaiseCanExecuteChanged();
+                FindDuplicatesCommand?.RaiseCanExecuteChanged();
             }
         }
         public ObservableCollection<LogMessage> LogMessages { get; }
@@ -28,9 +32,9 @@ namespace SysInventory.LogMessages.ViewModels
         public LogMessage SelectedMessage
         {
             get => _selectedMessage;
-            set 
-            { 
-                _selectedMessage = value; 
+            set
+            {
+                _selectedMessage = value;
                 ConfirmCommand?.RaiseCanExecuteChanged();
             }
         }
@@ -47,12 +51,14 @@ namespace SysInventory.LogMessages.ViewModels
             LoadDataCommand = new RelayCommand(LoadData, CanLoadData);
             ConfirmCommand = new RelayCommand(ConfirmMessage, CanConfirmMessage);
             AddCommand = new RelayCommand(OpenAddDialog);
+            FindDuplicatesCommand = new RelayCommand(FindDuplicates, CanLoadData);
         }
         private void LoadData()
         {
             try
             {
                 Settings.Default.ConnectionString = ConnectionString;
+                Settings.Default.Save();
                 LogMessages.Clear();
                 using (var connection = new SqlConnection(ConnectionString))
                 {
@@ -112,8 +118,19 @@ namespace SysInventory.LogMessages.ViewModels
         private void OpenAddDialog()
         {
             Settings.Default.ConnectionString = ConnectionString;
+            Settings.Default.Save();
             new AddDialog().ShowDialog();
             LoadData();
+        }
+        private void FindDuplicates()
+        {
+            if(LogMessages.Count == 0)
+                LoadData();
+            var duplicateChecker = new DuplicateChecker();
+            var duplicates = duplicateChecker.FindDuplicates(LogMessages);
+            LogMessages.Clear();
+            foreach (var duplicate in duplicates.Where(entity => entity is LogMessage).Cast<LogMessage>())
+                LogMessages.Add(duplicate);
         }
     }
 }

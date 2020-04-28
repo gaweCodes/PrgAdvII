@@ -22,9 +22,9 @@ namespace OverridingEquals
                 const int hashingBase = (int)2166136261;
                 const int hashingMultiplier = 16777619;
                 var hash = hashingBase;
-                hash = (hash * hashingMultiplier) ^ (ReferenceEquals(null, AreaCode) ? AreaCode.GetHashCode() : 0);
-                hash = (hash * hashingMultiplier) ^ (ReferenceEquals(null, Exchange) ? Exchange.GetHashCode() : 0);
-                hash = (hash * hashingMultiplier) ^ (ReferenceEquals(null, SubscriberNumber) ? SubscriberNumber.GetHashCode() : 0);
+                hash = (hash * hashingMultiplier) ^ (AreaCode?.GetHashCode() ?? 0);
+                hash = (hash * hashingMultiplier) ^ (Exchange?.GetHashCode() ?? 0);
+                hash = (hash * hashingMultiplier) ^ (SubscriberNumber?.GetHashCode() ?? 0);
                 return hash;
             }
         }

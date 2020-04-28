@@ -92,5 +92,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DuplicateCheckerLib\DuplicateCheckerLib.csproj">
+      <Project>{fff76215-025e-4386-91d5-b9ba5fc123ef}</Project>
+      <Name>DuplicateCheckerLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

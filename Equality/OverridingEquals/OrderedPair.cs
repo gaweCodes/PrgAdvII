@@ -16,7 +16,7 @@ namespace OverridingEquals
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return First.Equals(other.First) &&  Second.Equals(other.Second);
+            return First.Equals(other.First) && Second.Equals(other.Second);
         }
         public override int GetHashCode()
         {
@@ -25,8 +25,8 @@ namespace OverridingEquals
                 const int hashingBase = (int)2166136261;
                 const int hashingMultiplier = 16777619;
                 var hash = hashingBase;
-                hash = (hash * hashingMultiplier) ^ (ReferenceEquals(null, First) ? First.GetHashCode() : 0);
-                hash = (hash * hashingMultiplier) ^ (ReferenceEquals(null, Second) ? Second.GetHashCode() : 0);
+                hash = (hash * hashingMultiplier) ^ (First?.GetHashCode() ?? 0);
+                hash = (hash * hashingMultiplier) ^ (Second?.GetHashCode() ?? 0);
                 return hash;
             }
         }
