@@ -61,7 +61,7 @@ namespace CopyAndEqualityStack
                 const int hashingBase = (int)2166136261;
                 const int hashingMultiplier = 16777619;
                 const int hash = hashingBase;
-                return (hash * hashingMultiplier) ^ (!ReferenceEquals(null, _items) ? _items.GetHashCode() : 0);
+                return (hash * hashingMultiplier) ^ (_items?.GetHashCode() ?? 0);
             }
         }
         public static bool operator ==(Stack stackA, Stack stackB)
