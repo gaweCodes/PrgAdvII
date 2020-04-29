@@ -33,6 +33,6 @@
         <DataGrid SelectionMode="Single" SelectedItem="{Binding SelectedMessage}" ItemsSource="{Binding LogMessages}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserResizeRows="True" CanUserSortColumns="True" IsReadOnly="true" />
         <Button Content="Add" Command="{Binding AddCommand}" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" />
         <Button Content="Confirm" Command="{Binding ConfirmCommand}" Grid.Column="4" Grid.Row="5"/>
-        <Button Content="Find duplicates" Command="{Binding FindDuplicatesCommand}" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" />
+        <Button Content="Find Duplicates" Command="{Binding FindDuplicatesCommand}" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" />
     </Grid>
 </UserControl>
