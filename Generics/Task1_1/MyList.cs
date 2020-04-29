@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Task1_1
 {
-    public class MyList<T> : IEnumerable<T>
+    internal class MyList<T> : IEnumerable<T>
     {
         protected Node Head;
         protected Node Current = null;
-        protected class Node
+        protected sealed class Node
         {
             public Node Next { get; set; }
             public T Data { get; set; }
