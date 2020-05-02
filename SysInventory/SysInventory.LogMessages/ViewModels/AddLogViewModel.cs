@@ -87,9 +87,10 @@ namespace SysInventory.LogMessages.ViewModels
                 MessageBox.Show("Es ist ein Fehler aufgetreten: " + e.Message);
             }
         }
-        private bool CanSave(Window windowToClose) => windowToClose != null && !string.IsNullOrWhiteSpace(Settings.Default.ConnectionString) &&
-                                  !string.IsNullOrWhiteSpace(PoD) && !string.IsNullOrWhiteSpace(Hostname) &&
-                                  Severity > 0 &&
-                                  !string.IsNullOrWhiteSpace(Message);
+
+        private bool CanSave(Window windowToClose) =>
+            windowToClose != null && !string.IsNullOrWhiteSpace(PoD) && !string.IsNullOrWhiteSpace(Hostname) &&
+            Severity > 0 &&
+            !string.IsNullOrWhiteSpace(Message);
     }
 }

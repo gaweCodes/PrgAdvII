@@ -24,6 +24,7 @@ namespace SysInventory.LogMessages.ViewModels
             {
                 _connectionString = value;
                 LoadDataCommand?.RaiseCanExecuteChanged();
+                AddCommand?.RaiseCanExecuteChanged();
                 FindDuplicatesCommand?.RaiseCanExecuteChanged();
             }
         }
@@ -50,7 +51,7 @@ namespace SysInventory.LogMessages.ViewModels
             LogMessages = new ObservableCollection<LogMessage>();
             LoadDataCommand = new RelayCommand(LoadData, CanLoadData);
             ConfirmCommand = new RelayCommand(ConfirmMessage, CanConfirmMessage);
-            AddCommand = new RelayCommand(OpenAddDialog);
+            AddCommand = new RelayCommand(OpenAddDialog, CanLoadData);
             FindDuplicatesCommand = new RelayCommand(FindDuplicates, CanLoadData);
         }
         private void LoadData()
