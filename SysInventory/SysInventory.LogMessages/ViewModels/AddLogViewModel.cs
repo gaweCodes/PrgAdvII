@@ -48,7 +48,6 @@ namespace SysInventory.LogMessages.ViewModels
         }
         public RelayCommand<Window> SaveCommand { get; }
         public RelayCommand<Window> CancelCommand { get; }
-
         public AddLogViewModel()
         {
             SaveCommand = new RelayCommand<Window>(Save, CanSave);
