@@ -29,10 +29,10 @@
         </Grid.ColumnDefinitions>
         <TextBlock Text="Connectionstring" Grid.Row="0" Grid.Column="0"  />
         <TextBox Text="{Binding ConnectionString}" Grid.Row="1" Grid.Column="0" />
-        <Button Content="Load" Command="{Binding LoadDataCommand}" Grid.Column="2" Grid.Row="1" />
-        <DataGrid SelectionMode="Single" SelectedItem="{Binding SelectedMessage}" ItemsSource="{Binding LogMessages}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserResizeRows="True" CanUserSortColumns="True" IsReadOnly="true" />
+        <Button Content="Load" Command="{Binding LoadUnconfirmedLogMessagesCommand}" Grid.Column="2" Grid.Row="1" />
+        <DataGrid SelectionMode="Single" SelectedItem="{Binding SelectedLogMessage}" ItemsSource="{Binding UnconfirmedLogMessages}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserResizeRows="True" CanUserSortColumns="True" IsReadOnly="true" />
         <Button Content="Add" Command="{Binding AddCommand}" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" />
-        <Button Content="Confirm" Command="{Binding ConfirmCommand}" Grid.Column="4" Grid.Row="5"/>
-        <Button Content="Find Duplicates" Command="{Binding FindDuplicatesCommand}" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" />
+        <Button Content="Confirm" Command="{Binding ConfirmLogMessageCommand}" Grid.Column="4" Grid.Row="5"/>
+        <Button Content="Find Duplicates" Command="{Binding FindDuplicateLogMessagesCommand}" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" />
     </Grid>
 </UserControl>

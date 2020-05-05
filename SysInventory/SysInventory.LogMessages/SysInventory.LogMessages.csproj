@@ -51,8 +51,10 @@
     <Compile Include="AddDialog.xaml.cs">
       <DependentUpon>AddDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DatabaseRequestType.cs" />
     <Compile Include="Models\LogMessage.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="RelayCommandGeneric.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModels\AddLogViewModel.cs" />
     <Compile Include="ViewModels\LogViewModel.cs" />

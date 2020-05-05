@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -12,9 +13,9 @@ namespace SysInventory.LogMessages.ViewModels
 {
     internal class LogViewModel
     {
-        public RelayCommand LoadDataCommand { get; }
-        public RelayCommand FindDuplicatesCommand { get; }
-        public RelayCommand ConfirmCommand { get; }
+        public RelayCommand LoadUnconfirmedLogMessagesCommand { get; }
+        public RelayCommand FindDuplicateLogMessagesCommand { get; }
+        public RelayCommand ConfirmLogMessageCommand { get; }
         public RelayCommand AddCommand { get; }
         private string _connectionString;
         public string ConnectionString
@@ -23,20 +24,20 @@ namespace SysInventory.LogMessages.ViewModels
             set
             {
                 _connectionString = value;
-                LoadDataCommand?.RaiseCanExecuteChanged();
+                LoadUnconfirmedLogMessagesCommand?.RaiseCanExecuteChanged();
                 AddCommand?.RaiseCanExecuteChanged();
-                FindDuplicatesCommand?.RaiseCanExecuteChanged();
+                FindDuplicateLogMessagesCommand?.RaiseCanExecuteChanged();
             }
         }
-        public ObservableCollection<LogMessage> LogMessages { get; }
-        private LogMessage _selectedMessage;
-        public LogMessage SelectedMessage
+        public ObservableCollection<LogMessage> UnconfirmedLogMessages { get; }
+        private LogMessage _selectedLogMessage;
+        public LogMessage SelectedLogMessage
         {
-            get => _selectedMessage;
+            get => _selectedLogMessage;
             set
             {
-                _selectedMessage = value;
-                ConfirmCommand?.RaiseCanExecuteChanged();
+                _selectedLogMessage = value;
+                ConfirmLogMessageCommand?.RaiseCanExecuteChanged();
             }
         }
         public LogViewModel()
@@ -48,68 +49,32 @@ namespace SysInventory.LogMessages.ViewModels
                 Settings.Default.Save();
             }
             ConnectionString = Settings.Default.ConnectionString;
-            LogMessages = new ObservableCollection<LogMessage>();
-            LoadDataCommand = new RelayCommand(LoadData, CanLoadData);
-            ConfirmCommand = new RelayCommand(ConfirmMessage, CanConfirmMessage);
-            AddCommand = new RelayCommand(OpenAddDialog, CanLoadData);
-            FindDuplicatesCommand = new RelayCommand(FindDuplicates, CanLoadData);
+            UnconfirmedLogMessages = new ObservableCollection<LogMessage>();
+            LoadUnconfirmedLogMessagesCommand = new RelayCommand(LoadUnconfirmedLogMessages, CanConnectToDatabase);
+            ConfirmLogMessageCommand = new RelayCommand(ConfirmLogMessage, CanConfirmLogMessage);
+            AddCommand = new RelayCommand(OpenAddDialog, CanConnectToDatabase);
+            FindDuplicateLogMessagesCommand = new RelayCommand(LoadDuplicateLogMessages, CanConnectToDatabase);
         }
-        private void LoadData()
+        private bool CanConnectToDatabase() => !string.IsNullOrWhiteSpace(ConnectionString);
+        private void LoadUnconfirmedLogMessages()
         {
             try
             {
-                Settings.Default.ConnectionString = ConnectionString;
-                Settings.Default.Save();
-                LogMessages.Clear();
-                using (var connection = new SqlConnection(ConnectionString))
-                {
-                    connection.Open();
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText =
-                            "select id, pod, location, hostname, severity, timestamp, message from v_logentries order by timestamp";
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                LogMessages.Add(new LogMessage
-                                {
-                                    Id = Guid.Parse(reader.GetValue(0).ToString()),
-                                    PoD = reader.GetValue(1).ToString(),
-                                    Location = reader.GetValue(2).ToString(),
-                                    Hostname = reader.GetValue(3).ToString(),
-                                    Severity = int.Parse(reader.GetValue(4).ToString()),
-                                    Timestamp = DateTime.Parse(reader.GetValue(5).ToString()),
-                                    Message = reader.GetValue(6).ToString()
-                                });
-                            }
-                        }
-                    }
-                }
+                UpdateSettings();
+                RequestDatabaseByRequestType(DatabaseRequestType.Query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Es ist ein Fehler aufgetreten: " + ex.Message);
             }
         }
-        private bool CanLoadData() => !string.IsNullOrWhiteSpace(ConnectionString);
-        private bool CanConfirmMessage() => SelectedMessage != null;
-        private void ConfirmMessage()
+        private bool CanConfirmLogMessage() => SelectedLogMessage != null;
+        private void ConfirmLogMessage()
         {
             try
             {
-                using (var connection = new SqlConnection(ConnectionString))
-                {
-                    connection.Open();
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "LogClear";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@Id", SelectedMessage.Id);
-                        cmd.ExecuteNonQuery();
-                        LoadData();
-                    }
-                }
+                RequestDatabaseByRequestType(DatabaseRequestType.StoredProcedure);
+                LoadUnconfirmedLogMessages();
             }
             catch (Exception e)
             {
@@ -118,20 +83,77 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void OpenAddDialog()
         {
+            UpdateSettings();
+            new AddDialog().ShowDialog();
+            LoadUnconfirmedLogMessages();
+        }
+        private void LoadDuplicateLogMessages()
+        {
+            if(UnconfirmedLogMessages.Count == 0)
+                LoadUnconfirmedLogMessages();
+            var duplicateChecker = new DuplicateChecker();
+            var duplicates = duplicateChecker.FindDuplicates(UnconfirmedLogMessages);
+            var castedDuplicates = duplicates.Where(entity => entity is LogMessage).Cast<LogMessage>();
+            PopulateUnconfirmedLogMessagesCollection(castedDuplicates);
+        }
+        private void UpdateSettings()
+        {
             Settings.Default.ConnectionString = ConnectionString;
             Settings.Default.Save();
-            new AddDialog().ShowDialog();
-            LoadData();
         }
-        private void FindDuplicates()
+        private void RequestDatabaseByRequestType(DatabaseRequestType requestType)
         {
-            if(LogMessages.Count == 0)
-                LoadData();
-            var duplicateChecker = new DuplicateChecker();
-            var duplicates = duplicateChecker.FindDuplicates(LogMessages);
-            LogMessages.Clear();
-            foreach (var duplicate in duplicates.Where(entity => entity is LogMessage).Cast<LogMessage>())
-                LogMessages.Add(duplicate);
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                if (requestType == DatabaseRequestType.Query)
+                    SendQueryRequest(connection);
+                else
+                    ExecuteStoredProcedureOnConnection(connection);
+            }
+        }
+        private void SendQueryRequest(SqlConnection connection)
+        {
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText =
+                    "select id, pod, location, hostname, severity, timestamp, message from v_logentries order by timestamp";
+                using (var reader = cmd.ExecuteReader())
+                    PopulateUnconfirmedLogMessagesCollection(reader);
+            }
+        }
+        private void PopulateUnconfirmedLogMessagesCollection(IDataReader reader)
+        {
+            UnconfirmedLogMessages.Clear();
+            while (reader.Read())
+            {
+                UnconfirmedLogMessages.Add(new LogMessage
+                {
+                    Id = Guid.Parse(reader.GetValue(0).ToString()),
+                    PoD = reader.GetValue(1).ToString(),
+                    Location = reader.GetValue(2).ToString(),
+                    Hostname = reader.GetValue(3).ToString(),
+                    Severity = int.Parse(reader.GetValue(4).ToString()),
+                    Timestamp = DateTime.Parse(reader.GetValue(5).ToString()),
+                    Message = reader.GetValue(6).ToString()
+                });
+            }
+        }
+        private void PopulateUnconfirmedLogMessagesCollection(IEnumerable<LogMessage> logMessgesToAdd)
+        {
+            UnconfirmedLogMessages.Clear();
+            foreach (var duplicate in logMessgesToAdd)
+                UnconfirmedLogMessages.Add(duplicate);
+        }
+        private void ExecuteStoredProcedureOnConnection(SqlConnection connection)
+        {
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = "LogClear";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Id", SelectedLogMessage.Id);
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }
