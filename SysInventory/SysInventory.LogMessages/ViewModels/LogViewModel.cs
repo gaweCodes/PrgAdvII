@@ -16,6 +16,7 @@ namespace SysInventory.LogMessages.ViewModels
         public RelayCommand LoadUnconfirmedLogMessagesCommand { get; }
         public RelayCommand FindDuplicateLogMessagesCommand { get; }
         public RelayCommand ConfirmLogMessageCommand { get; }
+        public RelayCommand ShowInfoMessageCommand { get; }
         public RelayCommand AddCommand { get; }
         private string _connectionString;
         public string ConnectionString
@@ -54,6 +55,7 @@ namespace SysInventory.LogMessages.ViewModels
             ConfirmLogMessageCommand = new RelayCommand(ConfirmLogMessage, CanConfirmLogMessage);
             AddCommand = new RelayCommand(OpenAddDialog, CanConnectToDatabase);
             FindDuplicateLogMessagesCommand = new RelayCommand(LoadDuplicateLogMessages, CanConnectToDatabase);
+            ShowInfoMessageCommand = new RelayCommand(ShowInfoMessage);
         }
         private bool CanConnectToDatabase() => !string.IsNullOrWhiteSpace(ConnectionString);
         private void LoadUnconfirmedLogMessages()
@@ -155,5 +157,6 @@ namespace SysInventory.LogMessages.ViewModels
                 cmd.ExecuteNonQuery();
             }
         }
+        public void ShowInfoMessage() => MessageBox.Show("SysInventory by Gabriel Weibel");
     }
 }
