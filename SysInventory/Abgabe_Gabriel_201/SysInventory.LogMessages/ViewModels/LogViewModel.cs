@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using DuplicateCheckerLib;
 using SysInventory.LogMessages.Models;
@@ -158,6 +157,6 @@ namespace SysInventory.LogMessages.ViewModels
                 cmd.ExecuteNonQuery();
             }
         }
-        public void ShowInfoMessage() => MessageBox.Show($"Product: SysInventory {Environment.NewLine}Version: {Assembly.GetExecutingAssembly().GetName().Version} {Environment.NewLine}Author: Gabriel Weibel{Environment.NewLine}Support: admin@gaebster.ch");
+        public void ShowInfoMessage() => MessageBox.Show("SysInventory by Gabriel Weibel");
     }
 }
