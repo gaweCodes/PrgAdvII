@@ -36,6 +36,6 @@
         <Button Content="Add" Command="{Binding AddCommand}" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" />
         <Button Content="Confirm" Command="{Binding ConfirmLogMessageCommand}" Grid.Column="4" Grid.Row="5"/>
         <Button Content="Find Duplicates" Command="{Binding FindDuplicateLogMessagesCommand}" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" />
-        <Button Content="Close" Command="{Binding ShowInfoMessageCommand}" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="5" />
+        <Button Content="Information" Command="{Binding ShowInfoMessageCommand}" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="5" />
     </Grid>
 </UserControl>
