@@ -3,7 +3,7 @@ using DuplicateCheckerLib;
 
 namespace SysInventory.LogMessages.Models
 {
-    public sealed class LogMessage : IEntity, IEquatable<LogMessage>
+    public sealed class LogEntry : IEntity, IEquatable<LogEntry>
     {
         public Guid Id { get; set; }
         public string PoD { get; set; }
@@ -12,8 +12,8 @@ namespace SysInventory.LogMessages.Models
         public int Severity { get; set; }
         public DateTime Timestamp { get; set; }
         public string Message { get; set; }
-        public override bool Equals(object obj) => Equals(obj as LogMessage);
-        public bool Equals(LogMessage other)
+        public override bool Equals(object obj) => Equals(obj as LogEntry);
+        public bool Equals(LogEntry other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -30,12 +30,14 @@ namespace SysInventory.LogMessages.Models
                 return (hash * hashingMultiplier) ^ Message.GetHashCode();
             }
         }
-        public static bool operator ==(LogMessage logMessageA, LogMessage logMessageB)
+        public static bool operator ==(LogEntry logMessageA, LogEntry logMessageB)
         {
             if (ReferenceEquals(logMessageA, logMessageB))
                 return true;
             return logMessageA?.Equals(logMessageB) == true;
         }
-        public static bool operator !=(LogMessage logMessageA, LogMessage logMessageB) => !(logMessageA == logMessageB);
+        public static bool operator !=(LogEntry logMessageA, LogEntry logMessageB) => !(logMessageA == logMessageB);
+        public override string ToString() =>
+            $"Id: {Id}{Environment.NewLine}PoD: {PoD}{Environment.NewLine}Location: {Location}{Environment.NewLine}Hostname: {Hostname}{Environment.NewLine}Serverity: {Severity}{Environment.NewLine}Timestamp: {Timestamp:dd.MM.yyyy}{Environment.NewLine}Message: {Message}";
     }
 }

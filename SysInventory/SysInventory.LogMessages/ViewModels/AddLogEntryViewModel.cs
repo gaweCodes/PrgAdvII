@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.Windows;
-using SysInventory.LogMessages.Properties;
+using SysInventory.LogMessages.DataAccess;
+using SysInventory.LogMessages.DataAccess.AdoNet;
+using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class AddLogViewModel
+    internal class AddLogEntryViewModel
     {
+        private readonly IRepositoryBase<LogEntry> _logRepository;
         private string _pod;
         public string PoD
         {
@@ -50,47 +51,30 @@ namespace SysInventory.LogMessages.ViewModels
         }
         public RelayCommand<Window> SaveCommand { get; }
         public RelayCommand<Window> CancelCommand { get; }
-        public AddLogViewModel()
+        public AddLogEntryViewModel()
         {
             SaveCommand = new RelayCommand<Window>(Save, CanSave);
             CancelCommand = new RelayCommand<Window>(Cancel);
+            _logRepository = new LogRepository();
         }
-        private void Save(Window windoToClose)
+        private void Save(Window windowToClose)
         {
+
             try
             {
-                if(CanSuccessfullyCreateLogMessage())
-                    windoToClose.Close();
-                else
-                    MessageBox.Show("The device or pod was not found.");
+                _logRepository.Add(new LogEntry
+                    {PoD = PoD, Message = Message, Severity = Severity, Hostname = Hostname});
             }
             catch (Exception e)
             {
-                MessageBox.Show("Es ist ein Fehler aufgetreten: " + e.Message);
+                MessageBox.Show("An error occured while adding the new log entry: " + e.Message);
             }
+            Cancel(windowToClose);
         }
         private bool CanSave(Window windowToClose) =>
             windowToClose != null && !string.IsNullOrWhiteSpace(PoD) && !string.IsNullOrWhiteSpace(Hostname) &&
             Severity > 0 &&
             !string.IsNullOrWhiteSpace(Message);
-        private bool CanSuccessfullyCreateLogMessage()
-        {
-            using (var connection = new SqlConnection(Settings.Default.ConnectionString))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = "LogMessageAdd";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@podName", PoD);
-                    cmd.Parameters.AddWithValue("@hostname", Hostname);
-                    cmd.Parameters.AddWithValue("@lvl", Severity);
-                    cmd.Parameters.AddWithValue("@msg", Message);
-                    var result = cmd.ExecuteNonQuery();
-                    return result != -1;
-                }
-            }
-        }
-        private void Cancel(Window windowToClose) => windowToClose?.Close();
+        private static void Cancel(Window windowToClose) => windowToClose?.Close();
     }
 }

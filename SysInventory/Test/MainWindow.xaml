@@ -7,5 +7,5 @@
         xmlns:other="clr-namespace:SysInventory.LogMessages;assembly=SysInventory.LogMessages"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <other:LogMessages />
+    <other:LogEntries />
 </Window>

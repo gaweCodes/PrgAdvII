@@ -48,26 +48,28 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddDialog.xaml.cs">
-      <DependentUpon>AddDialog.xaml</DependentUpon>
+    <Compile Include="AddEntryDialog.xaml.cs">
+      <DependentUpon>AddEntryDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseRequestType.cs" />
-    <Compile Include="Models\LogMessage.cs" />
+    <Compile Include="DataAccess\AdoNet\AdoNetBaseRepository.cs" />
+    <Compile Include="DataAccess\AdoNet\LogRepository.cs" />
+    <Compile Include="DataAccess\IRepositoryBase.cs" />
+    <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="RelayCommandGeneric.cs" />
     <Compile Include="RelayCommand.cs" />
-    <Compile Include="ViewModels\AddLogViewModel.cs" />
-    <Compile Include="ViewModels\LogViewModel.cs" />
-    <Page Include="AddDialog.xaml">
+    <Compile Include="ViewModels\AddLogEntryViewModel.cs" />
+    <Compile Include="ViewModels\LogEntriesViewModel.cs" />
+    <Page Include="AddEntryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LogMessages.xaml">
+    <Page Include="LogEntries.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="LogMessages.xaml.cs">
-      <DependentUpon>LogMessages.xaml</DependentUpon>
+    <Compile Include="LogEntries.xaml.cs">
+      <DependentUpon>LogEntries.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -100,5 +102,6 @@
       <Name>DuplicateCheckerLib</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
