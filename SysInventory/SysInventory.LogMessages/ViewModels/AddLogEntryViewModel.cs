@@ -14,7 +14,7 @@ namespace SysInventory.LogMessages.ViewModels
             set
             {
                 _pod = value;
-                SaveCommand.RaiseCanExecuteChanged();
+                SaveCurrentItemCommand.RaiseCanExecuteChanged();
             }
         }
         private string _hostname;
@@ -24,7 +24,7 @@ namespace SysInventory.LogMessages.ViewModels
             set
             {
                 _hostname = value;
-                SaveCommand.RaiseCanExecuteChanged();
+                SaveCurrentItemCommand.RaiseCanExecuteChanged();
             }
         }
         private int _severity;
@@ -34,7 +34,7 @@ namespace SysInventory.LogMessages.ViewModels
             set
             {
                 _severity = value;
-                SaveCommand.RaiseCanExecuteChanged();
+                SaveCurrentItemCommand.RaiseCanExecuteChanged();
             }
         }
         private string _message;
@@ -44,14 +44,13 @@ namespace SysInventory.LogMessages.ViewModels
             set
             {
                 _message = value;
-                SaveCommand.RaiseCanExecuteChanged();
+                SaveCurrentItemCommand.RaiseCanExecuteChanged();
             }
         }
-        public RelayCommand<Window> SaveCommand { get; }
         public RelayCommand<Window> CancelCommand { get; }
         public AddLogEntryViewModel()
         {
-            SaveCommand = new RelayCommand<Window>(Save, CanSave);
+            SaveCurrentItemCommand = new RelayCommand<Window>(Save, CanSave);
             CancelCommand = new RelayCommand<Window>(Cancel);
             DataRepository = new LogRepository();
         }
@@ -62,12 +61,12 @@ namespace SysInventory.LogMessages.ViewModels
             {
                 DataRepository.Add(new LogEntry
                     {PoD = PoD, Message = Message, Severity = Severity, Hostname = Hostname});
+                Cancel(windowToClose);
             }
             catch (Exception e)
             {
                 MessageBox.Show("An error occured while adding the new log entry: " + e.Message);
             }
-            Cancel(windowToClose);
         }
         private bool CanSave(Window windowToClose) =>
             windowToClose != null && !string.IsNullOrWhiteSpace(PoD) && !string.IsNullOrWhiteSpace(Hostname) &&

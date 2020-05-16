@@ -3,55 +3,28 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
-using SysInventory.LogMessages.Annotations;
 using SysInventory.LogMessages.DataAccess.AdoNet;
 using SysInventory.LogMessages.Extensions;
 using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class LocationsViewModel : BaseViewModel<Location>, INotifyPropertyChanged
+    internal class LocationsViewModel : MasterDetailViewModel<Location, LocationTreeViewitem>, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        private Location _selectedItem;
-        public Location SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                _selectedItem = value;
-                SaveCurrentLocationCommand?.RaiseCanExecuteChanged();
-                DeleteLocationCommand?.RaiseCanExecuteChanged();
-                OnPropertyChanged(nameof(SelectedItem));
-            }
-        }
-        public RelayCommand LoadLocationTreeCommand { get; }
-        public RelayCommand SearchLocationsCommand { get; }
-        public RelayCommand CountLocationsCommand { get; }
-        public RelayCommand CreateLocationCommand { get; }
-        public RelayCommand SaveCurrentLocationCommand { get; }
-        public RelayCommand<LocationTreeViewitem> TreeviewSelectedItemChangedCommand { get; }
-        public RelayCommand DeleteLocationCommand { get; }
-        public ObservableCollection<LocationTreeViewitem> LocationTree { get; }
         public LocationsViewModel()
         {
             DataRepository = new LocationRepository();
-            LoadLocationTreeCommand = new RelayCommand(LoadLocationTree);
-            CreateLocationCommand = new RelayCommand(CreateNewLocation);
-            LocationTree = new ObservableCollection<LocationTreeViewitem>();
-            TreeviewSelectedItemChangedCommand = new RelayCommand<LocationTreeViewitem>(ShowLocationDetails);
-            SaveCurrentLocationCommand = new RelayCommand(SaveCurrentLocation, IsItemInDetailMode);
-            DeleteLocationCommand = new RelayCommand(DeleteSelectedLocation, IsItemInDetailMode);
-            SearchLocationsCommand = new RelayCommand(SearchLocations);
-            CountLocationsCommand = new RelayCommand(CountLocations);
+            LoadFilteredItemsCommand = new RelayCommand(SearchLocations);
+            LoadAllItemsCommand = new RelayCommand(LoadLocationTree);
+            LoadDetailsCommand = new RelayCommand<LocationTreeViewitem>(ShowLocationDetails);
+            CountItemsCommand = new RelayCommand(CountLocations);
+            CreateItemCommand = new RelayCommand(CreateNewLocation);
+            ShowingItems = new ObservableCollection<LocationTreeViewitem>();
+            SaveCurrentItemCommand = new RelayCommand(SaveCurrentLocation, IsItemSelected);
+            DeleteItemCommand = new RelayCommand(DeleteSelectedLocation, IsItemSelected);
             LoadLocationTree();
         }
-        private bool IsItemInDetailMode() => SelectedItem != null;
         private void LoadLocationTree()
         {
             var locationList = DataRepository.GetAll();
@@ -78,10 +51,10 @@ namespace SysInventory.LogMessages.ViewModels
         private void CreateNewLocation() => SelectedItem = new Location {ParentId = SelectedItem?.Id};
         private void SearchLocations()
         {
-            if (string.IsNullOrEmpty(WhereCrit) || string.IsNullOrEmpty(Values)) LoadLocationTree();
+            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadLocationTree();
             else
             {
-                var foundEntries = DataRepository.GetAll(WhereCrit, ParseSearchValues());
+                var foundEntries = DataRepository.GetAll(WhereCriteria, ParseSearchValues());
                 var messageText = string.Empty;
                 foundEntries.ForEach(x => messageText += x + Environment.NewLine);
                 MessageBox.Show(messageText);
@@ -89,10 +62,10 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void CountLocations()
         {
-            if (string.IsNullOrEmpty(WhereCrit) || string.IsNullOrEmpty(Values)) MessageBox.Show($"found {DataRepository.Count()} entries");
+            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) MessageBox.Show($"found {DataRepository.Count()} entries");
             else
             {
-                var count = DataRepository.Count(WhereCrit, ParseSearchValues());
+                var count = DataRepository.Count(WhereCriteria, ParseSearchValues());
                 if (count > -1) MessageBox.Show($"found {count} entries");
             }
         }
@@ -104,9 +77,9 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void PopulateLocationTree(IEnumerable<Location> locationList)
         {
-            LocationTree.Clear();
+            ShowingItems.Clear();
             var tree = locationList.GenerateTree(_ => _.Id, _ => _.ParentId).ToList();
-            LocationTree.Add(new LocationTreeViewitem
+            ShowingItems.Add(new LocationTreeViewitem
             {
                 Item = new Location { Name = "Locations" },
                 Children = tree

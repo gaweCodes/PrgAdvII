@@ -11,19 +11,11 @@ using SysInventory.LogMessages.Properties;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class LogEntriesViewModel : BaseViewModel<LogEntry>
+    internal class LogEntriesViewModel : MasterDetailViewModel<LogEntry, LogEntry>
     {
-        public RelayCommand LoadUnconfirmedLogEntriesCommand { get; }
-        public RelayCommand FindDuplicateLogEntriesCommand { get; }
-        public RelayCommand LoadAllLogEntriesCommand { get; }
-        public RelayCommand ShowDetailsCommand { get; }
-        public RelayCommand CountLogEntriesCommand { get; }
-        public RelayCommand ConfirmLogEntryCommand { get; }
-        public RelayCommand DeleteLogEntryCommand { get; }
+        public IRelayCommand FindDuplicateLogEntriesCommand { get; }
         public RelayCommand ShowInfoMessageCommand { get; }
-        public RelayCommand AddLogEntryCommand { get; }
         public RelayCommand OpenLocationWindowCommand { get; }
-        public RelayCommand SearchLogEntriesCommand { get; }
         private string _connectionString;
         public string ConnectionString
         {
@@ -31,25 +23,12 @@ namespace SysInventory.LogMessages.ViewModels
             set
             {
                 _connectionString = value;
-                LoadUnconfirmedLogEntriesCommand?.RaiseCanExecuteChanged();
-                AddLogEntryCommand?.RaiseCanExecuteChanged();
+                LoadFilteredItemsCommand?.RaiseCanExecuteChanged();
+                CreateItemCommand?.RaiseCanExecuteChanged();
                 FindDuplicateLogEntriesCommand?.RaiseCanExecuteChanged();
-                CountLogEntriesCommand?.RaiseCanExecuteChanged();
-                SearchLogEntriesCommand?.RaiseCanExecuteChanged();
+                CountItemsCommand?.RaiseCanExecuteChanged();
+                LoadFilteredItemsCommand?.RaiseCanExecuteChanged();
                 OpenLocationWindowCommand?.RaiseCanExecuteChanged();
-            }
-        }
-        public ObservableCollection<LogEntry> UnconfirmedLogEntries { get; }
-        private LogEntry _selectedLogEntry;
-        public LogEntry SelectedLogEntry
-        {
-            get => _selectedLogEntry;
-            set
-            {
-                _selectedLogEntry = value;
-                ConfirmLogEntryCommand?.RaiseCanExecuteChanged();
-                ShowDetailsCommand?.RaiseCanExecuteChanged();
-                DeleteLogEntryCommand?.RaiseCanExecuteChanged();
             }
         }
         public LogEntriesViewModel()
@@ -62,17 +41,17 @@ namespace SysInventory.LogMessages.ViewModels
             }
             ConnectionString = Settings.Default.ConnectionString;
             DataRepository = new LogRepository();
-            UnconfirmedLogEntries = new ObservableCollection<LogEntry>();
-            LoadUnconfirmedLogEntriesCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
-            ConfirmLogEntryCommand = new RelayCommand(ConfirmLogEntry, IsEntrySelected);
-            ShowDetailsCommand = new RelayCommand(ShowLogEntryDetails, IsEntrySelected);
-            DeleteLogEntryCommand = new RelayCommand(DeleteLogEntry, IsEntrySelected);
-            AddLogEntryCommand = new RelayCommand(OpenAddLogEntryDialog, CanConnectToDatabase);
+            ShowingItems = new ObservableCollection<LogEntry>();
+            LoadFilteredItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
+            SaveCurrentItemCommand = new RelayCommand(ConfirmLogEntry, IsItemSelected);
+            LoadDetailsCommand = new RelayCommand(ShowLogEntryDetails, IsItemSelected);
+            DeleteItemCommand = new RelayCommand(DeleteLogEntry, IsItemSelected);
+            CreateItemCommand = new RelayCommand(OpenAddLogEntryDialog, CanConnectToDatabase);
             FindDuplicateLogEntriesCommand = new RelayCommand(LoadDuplicateLogEntries, CanConnectToDatabase);
-            LoadAllLogEntriesCommand = new RelayCommand(LoadAllLogEntries, CanConnectToDatabase);
+            LoadAllItemsCommand = new RelayCommand(LoadAllLogEntries, CanConnectToDatabase);
             ShowInfoMessageCommand = new RelayCommand(ShowInfoMessage);
-            CountLogEntriesCommand = new RelayCommand(CountLogEntries, CanConnectToDatabase);
-            SearchLogEntriesCommand = new RelayCommand(SearchLogEntries, CanConnectToDatabase);
+            CountItemsCommand = new RelayCommand(CountLogEntries, CanConnectToDatabase);
+            LoadFilteredItemsCommand = new RelayCommand(SearchLogEntries, CanConnectToDatabase);
             OpenLocationWindowCommand = new RelayCommand(OpenLocationWindow, CanConnectToDatabase);
         }
         private bool CanConnectToDatabase() => !string.IsNullOrWhiteSpace(ConnectionString);
@@ -102,12 +81,11 @@ namespace SysInventory.LogMessages.ViewModels
                 MessageBox.Show("An error occured while loading the log entries: " + ex.Message);
             }
         }
-        private bool IsEntrySelected() => SelectedLogEntry != null;
         private void ConfirmLogEntry()
         {
             try
             {
-                DataRepository.Update(SelectedLogEntry);
+                DataRepository.Update(SelectedItem);
                 LoadUnconfirmedLogEntries();
             }
             catch (Exception e)
@@ -123,10 +101,10 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void LoadDuplicateLogEntries()
         {
-            if(UnconfirmedLogEntries.Count == 0)
+            if(ShowingItems.Count == 0)
                 LoadUnconfirmedLogEntries();
             var duplicateChecker = new DuplicateChecker();
-            var duplicates = duplicateChecker.FindDuplicates(UnconfirmedLogEntries);
+            var duplicates = duplicateChecker.FindDuplicates(ShowingItems);
             var castedDuplicates = duplicates.Where(entity => entity is LogEntry).Cast<LogEntry>();
             PopulateUnconfirmedLogEntriesCollection(castedDuplicates);
         }
@@ -137,36 +115,36 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void PopulateUnconfirmedLogEntriesCollection(IEnumerable<LogEntry> entriesToAdd)
         {
-            UnconfirmedLogEntries.Clear();
+            ShowingItems.Clear();
             foreach (var logEntry in entriesToAdd)
-                UnconfirmedLogEntries.Add(logEntry);
+                ShowingItems.Add(logEntry);
         }
         public void ShowInfoMessage() => MessageBox.Show($"Product: SysInventory {Environment.NewLine}Version: {Assembly.GetExecutingAssembly().GetName().Version} {Environment.NewLine}Author: Gabriel Weibel{Environment.NewLine}Support: admin@gaebster.ch");
         private void ShowLogEntryDetails()
         {
-            var foundEntry = DataRepository.GetSingle(SelectedLogEntry.Id);
+            var foundEntry = DataRepository.GetSingle(SelectedItem.Id);
             MessageBox.Show(foundEntry?.ToString());
         }
         private void DeleteLogEntry()
         {
-            DataRepository.Delete(SelectedLogEntry);
+            DataRepository.Delete(SelectedItem);
             LoadUnconfirmedLogEntries();
         }
         private void CountLogEntries()
         {
-            if (string.IsNullOrEmpty(WhereCrit) || string.IsNullOrEmpty(Values)) MessageBox.Show($"found {DataRepository.Count()} entries");
+            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) MessageBox.Show($"found {DataRepository.Count()} entries");
             else
             {
-                var count = DataRepository.Count(WhereCrit, ParseSearchValues());
+                var count = DataRepository.Count(WhereCriteria, ParseSearchValues());
                 if(count > -1) MessageBox.Show($"found {count} entries");
             }
         }
         private void SearchLogEntries()
         {
-            if (string.IsNullOrEmpty(WhereCrit) || string.IsNullOrEmpty(Values)) LoadUnconfirmedLogEntries();
+            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadUnconfirmedLogEntries();
             else
             {
-                var foundEntries = DataRepository.GetAll(WhereCrit, ParseSearchValues());
+                var foundEntries = DataRepository.GetAll(WhereCriteria, ParseSearchValues());
                 PopulateUnconfirmedLogEntriesCollection(foundEntries);
             }
         }

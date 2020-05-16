@@ -57,6 +57,7 @@
     <Compile Include="DataAccess\AdoNet\LogRepository.cs" />
     <Compile Include="DataAccess\IRepositoryBase.cs" />
     <Compile Include="Extensions\ListExtension.cs" />
+    <Compile Include="IRelayCommand.cs" />
     <Compile Include="Locations.xaml.cs">
       <DependentUpon>Locations.xaml</DependentUpon>
     </Compile>
@@ -70,6 +71,7 @@
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\LocationsViewModel.cs" />
     <Compile Include="ViewModels\LogEntriesViewModel.cs" />
+    <Compile Include="ViewModels\MasterDetailViewModel.cs" />
     <Page Include="AddLogEntryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

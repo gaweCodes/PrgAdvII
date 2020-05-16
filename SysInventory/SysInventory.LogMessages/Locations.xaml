@@ -43,15 +43,15 @@
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TreeView Grid.Row="0" Grid.Column="0" Grid.RowSpan="13" ItemsSource="{Binding LocationTree}" Name="LocationTreeView">
+        <TreeView Grid.Row="0" Grid.Column="0" Grid.RowSpan="13" ItemsSource="{Binding ShowingItems}" Name="LocationTreeView">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectedItemChanged">
-                    <i:InvokeCommandAction Command="{Binding TreeviewSelectedItemChangedCommand}" CommandParameter="{Binding ElementName=LocationTreeView, Path=SelectedItem}" x:Name="InteractivityFix"/>
+                    <i:InvokeCommandAction Command="{Binding LoadDetailsCommand}" CommandParameter="{Binding ElementName=LocationTreeView, Path=SelectedItem}" x:Name="InteractivityFix"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type models:LocationTreeViewitem}" ItemsSource="{Binding Children}">
-                    <TreeViewItem Header="{Binding Item}" Background="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}"  />
+                    <TreeViewItem Header="{Binding Item}"  />
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
@@ -72,16 +72,16 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Create" Command="{Binding CreateLocationCommand}" Grid.Row="0" Grid.Column="0" />
-            <Button Content="Delete" Command="{Binding DeleteLocationCommand}" Grid.Row="0" Grid.Column="2" />
+            <Button Content="Create" Command="{Binding CreateItemCommand}" Grid.Row="0" Grid.Column="0" />
+            <Button Content="Delete" Command="{Binding DeleteItemCommand}" Grid.Row="0" Grid.Column="2" />
         </Grid>
-        <Button Grid.Column="2" Grid.Row="15" Content="Save" Command="{Binding SaveCurrentLocationCommand}" />
+        <Button Grid.Column="2" Grid.Row="15" Content="Save" Command="{Binding SaveCurrentItemCommand}" />
         <Label Grid.Column="0" Grid.Row="17" Content="Where Crit e.g. columnName > @parameterName" />
-        <TextBox Grid.Column="2" Grid.Row="17" Text="{Binding WhereCrit}" />
+        <TextBox Grid.Column="2" Grid.Row="17" Text="{Binding WhereCriteria}" />
         <Label Grid.Column="0" Grid.Row="19" Content="Parameters e.g. parameterName|value;parameterName1|value1;" />
-        <TextBox Grid.Column="2" Grid.Row="19" Text="{Binding Values}" />
+        <TextBox Grid.Column="2" Grid.Row="19" Text="{Binding ParameterValues}" />
         <Label Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="3" Content="If one of the two fields above is empty, the request will be without filter!" />
-        <Button Content="Search" Command="{Binding SearchLocationsCommand}" Grid.Column="0" Grid.Row="23" />
-        <Button Content="Count" Command="{Binding CountLocationsCommand}" Grid.Column="2"  Grid.Row="23" />
+        <Button Content="Search" Command="{Binding LoadFilteredItemsCommand}" Grid.Column="0" Grid.Row="23" />
+        <Button Content="Count" Command="{Binding CountItemsCommand}" Grid.Column="2"  Grid.Row="23" />
     </Grid>
 </Window>

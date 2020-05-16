@@ -36,7 +36,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                     cmd.Parameters.AddWithValue("@lvl", entity.Severity);
                     cmd.Parameters.AddWithValue("@msg", entity.Message);
                     var result = cmd.ExecuteNonQuery();
-                    if (result != -1) MessageBox.Show("The device or pod could not be found");
+                    if (result == -1) MessageBox.Show("The device or pod could not be found");
                 }
             }
         }

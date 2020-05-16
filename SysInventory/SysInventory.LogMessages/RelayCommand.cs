@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace SysInventory.LogMessages
 {
-    public class RelayCommand : ICommand
+    public class RelayCommand : IRelayCommand
     {
         public event EventHandler CanExecuteChanged = delegate { };
         private readonly Action _targetExecuteMethod;

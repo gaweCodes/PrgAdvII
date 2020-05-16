@@ -43,21 +43,21 @@
         </Grid.ColumnDefinitions>
         <TextBlock Text="Connectionstring" Grid.Row="0" Grid.Column="0"  />
         <TextBox Text="{Binding ConnectionString}" Grid.Row="1" Grid.Column="0" />
-        <Button Content="Load" Command="{Binding LoadUnconfirmedLogEntriesCommand}" Grid.Column="2" Grid.Row="1" />
-        <DataGrid SelectionMode="Single" SelectedItem="{Binding SelectedLogEntry}" ItemsSource="{Binding UnconfirmedLogEntries}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserResizeRows="True" CanUserSortColumns="True" IsReadOnly="true" />
-        <Button Content="Add" Command="{Binding AddLogEntryCommand}" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" />
-        <Button Content="Confirm" Command="{Binding ConfirmLogEntryCommand}" Grid.Column="4" Grid.Row="5"/>
+        <Button Content="Load" Command="{Binding LoadFilteredItemsCommand}" Grid.Column="2" Grid.Row="1" />
+        <DataGrid SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding ShowingItems}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserResizeRows="True" CanUserSortColumns="True" IsReadOnly="true" />
+        <Button Content="Add" Command="{Binding CreateItemCommand}" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" />
+        <Button Content="Confirm" Command="{Binding SaveCurrentItemCommand}" Grid.Column="4" Grid.Row="5"/>
         <Button Content="Find Duplicates" Command="{Binding FindDuplicateLogEntriesCommand}" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" />
-        <Button Content="Load All" Command="{Binding LoadAllLogEntriesCommand}" Grid.Column="4" Grid.Row="7" />
-        <Button Content="Show Details" Command="{Binding ShowDetailsCommand}" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="3" />
-        <Button Content="Delete" Command="{Binding DeleteLogEntryCommand}" Grid.Column="4" Grid.Row="9" />
+        <Button Content="Load All" Command="{Binding LoadAllItemsCommand}" Grid.Column="4" Grid.Row="7" />
+        <Button Content="Show Details" Command="{Binding LoadDetailsCommand}" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="3" />
+        <Button Content="Delete" Command="{Binding DeleteItemCommand}" Grid.Column="4" Grid.Row="9" />
         <Label Grid.Column="0" Grid.Row="11" Content="Where Crit e.g. columnName > @parameterName" />
-        <TextBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="11" Text="{Binding WhereCrit}" />
+        <TextBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="11" Text="{Binding WhereCriteria}" />
         <Label Grid.Column="0" Grid.Row="13" Content="Parameters e.g. parameterName|value;parameterName1|value1;" />
-        <TextBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="13" Text="{Binding Values}" />
+        <TextBox Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="13" Text="{Binding ParameterValues}" />
         <Label Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="5" Content="If one of the two fields above is empty, the request will be without filter!" />
-        <Button Content="Search" Command="{Binding SearchLogEntriesCommand}" Grid.Column="0" Grid.Row="17" Grid.ColumnSpan="3" />
-        <Button Content="Count" Command="{Binding CountLogEntriesCommand}" Grid.Column="4" Grid.Row="17" />
+        <Button Content="Search" Command="{Binding LoadFilteredItemsCommand}" Grid.Column="0" Grid.Row="17" Grid.ColumnSpan="3" />
+        <Button Content="Count" Command="{Binding CountItemsCommand}" Grid.Column="4" Grid.Row="17" />
         <Button Content="Show Locations" Command="{Binding OpenLocationWindowCommand}" Grid.Column="0" Grid.Row="19" Grid.ColumnSpan="5" />
         <Button Content="Information" Command="{Binding ShowInfoMessageCommand}" Grid.Column="0" Grid.Row="21" Grid.ColumnSpan="5" />
     </Grid>

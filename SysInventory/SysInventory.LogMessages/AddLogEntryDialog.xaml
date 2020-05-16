@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Save"  Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=AddDialogWindow}"/>
+            <Button Content="Save"  Command="{Binding SaveCurrentItemCommand}" CommandParameter="{Binding ElementName=AddDialogWindow}"/>
             <Button Grid.Column="2" Content="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=AddDialogWindow}" />
         </Grid>
     </StackPanel>
