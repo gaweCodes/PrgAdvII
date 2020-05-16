@@ -31,6 +31,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -56,6 +58,7 @@
         <Label Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="5" Content="If one of the two fields above is empty, the request will be without filter!" />
         <Button Content="Search" Command="{Binding SearchLogEntriesCommand}" Grid.Column="0" Grid.Row="17" Grid.ColumnSpan="3" />
         <Button Content="Count" Command="{Binding CountLogEntriesCommand}" Grid.Column="4" Grid.Row="17" />
-        <Button Content="Information" Command="{Binding ShowInfoMessageCommand}" Grid.Column="0" Grid.Row="19" Grid.ColumnSpan="5" />
+        <Button Content="Show Locations" Command="{Binding OpenLocationWindowCommand}" Grid.Column="0" Grid.Row="19" Grid.ColumnSpan="5" />
+        <Button Content="Information" Command="{Binding ShowInfoMessageCommand}" Grid.Column="0" Grid.Row="21" Grid.ColumnSpan="5" />
     </Grid>
 </UserControl>

@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -48,19 +49,32 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddEntryDialog.xaml.cs">
-      <DependentUpon>AddEntryDialog.xaml</DependentUpon>
+    <Compile Include="AddLogEntryDialog.xaml.cs">
+      <DependentUpon>AddLogEntryDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\AdoNet\AdoNetBaseRepository.cs" />
+    <Compile Include="DataAccess\AdoNet\LocationRepository.cs" />
     <Compile Include="DataAccess\AdoNet\LogRepository.cs" />
     <Compile Include="DataAccess\IRepositoryBase.cs" />
+    <Compile Include="Extensions\ListExtension.cs" />
+    <Compile Include="Locations.xaml.cs">
+      <DependentUpon>Locations.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LocationTreeViewItem.cs" />
+    <Compile Include="Models\Location.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="RelayCommandGeneric.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModels\AddLogEntryViewModel.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\LocationsViewModel.cs" />
     <Compile Include="ViewModels\LogEntriesViewModel.cs" />
-    <Page Include="AddEntryDialog.xaml">
+    <Page Include="AddLogEntryDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Locations.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

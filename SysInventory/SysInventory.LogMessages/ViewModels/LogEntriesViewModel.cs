@@ -5,16 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using DuplicateCheckerLib;
-using SysInventory.LogMessages.DataAccess;
 using SysInventory.LogMessages.DataAccess.AdoNet;
 using SysInventory.LogMessages.Models;
 using SysInventory.LogMessages.Properties;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class LogEntriesViewModel
+    internal class LogEntriesViewModel : BaseViewModel<LogEntry>
     {
-        private readonly IRepositoryBase<LogEntry> _logRepository;
         public RelayCommand LoadUnconfirmedLogEntriesCommand { get; }
         public RelayCommand FindDuplicateLogEntriesCommand { get; }
         public RelayCommand LoadAllLogEntriesCommand { get; }
@@ -24,6 +22,7 @@ namespace SysInventory.LogMessages.ViewModels
         public RelayCommand DeleteLogEntryCommand { get; }
         public RelayCommand ShowInfoMessageCommand { get; }
         public RelayCommand AddLogEntryCommand { get; }
+        public RelayCommand OpenLocationWindowCommand { get; }
         public RelayCommand SearchLogEntriesCommand { get; }
         private string _connectionString;
         public string ConnectionString
@@ -37,6 +36,7 @@ namespace SysInventory.LogMessages.ViewModels
                 FindDuplicateLogEntriesCommand?.RaiseCanExecuteChanged();
                 CountLogEntriesCommand?.RaiseCanExecuteChanged();
                 SearchLogEntriesCommand?.RaiseCanExecuteChanged();
+                OpenLocationWindowCommand?.RaiseCanExecuteChanged();
             }
         }
         public ObservableCollection<LogEntry> UnconfirmedLogEntries { get; }
@@ -52,8 +52,6 @@ namespace SysInventory.LogMessages.ViewModels
                 DeleteLogEntryCommand?.RaiseCanExecuteChanged();
             }
         }
-        public string WhereCrit { get; set; }
-        public string Values { get; set; }
         public LogEntriesViewModel()
         {
             if (string.IsNullOrWhiteSpace(Settings.Default.ConnectionString))
@@ -63,18 +61,19 @@ namespace SysInventory.LogMessages.ViewModels
                 Settings.Default.Save();
             }
             ConnectionString = Settings.Default.ConnectionString;
-            _logRepository = new LogRepository();
+            DataRepository = new LogRepository();
             UnconfirmedLogEntries = new ObservableCollection<LogEntry>();
             LoadUnconfirmedLogEntriesCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
             ConfirmLogEntryCommand = new RelayCommand(ConfirmLogEntry, IsEntrySelected);
             ShowDetailsCommand = new RelayCommand(ShowLogEntryDetails, IsEntrySelected);
             DeleteLogEntryCommand = new RelayCommand(DeleteLogEntry, IsEntrySelected);
-            AddLogEntryCommand = new RelayCommand(OpenAddDialog, CanConnectToDatabase);
+            AddLogEntryCommand = new RelayCommand(OpenAddLogEntryDialog, CanConnectToDatabase);
             FindDuplicateLogEntriesCommand = new RelayCommand(LoadDuplicateLogEntries, CanConnectToDatabase);
             LoadAllLogEntriesCommand = new RelayCommand(LoadAllLogEntries, CanConnectToDatabase);
             ShowInfoMessageCommand = new RelayCommand(ShowInfoMessage);
             CountLogEntriesCommand = new RelayCommand(CountLogEntries, CanConnectToDatabase);
             SearchLogEntriesCommand = new RelayCommand(SearchLogEntries, CanConnectToDatabase);
+            OpenLocationWindowCommand = new RelayCommand(OpenLocationWindow, CanConnectToDatabase);
         }
         private bool CanConnectToDatabase() => !string.IsNullOrWhiteSpace(ConnectionString);
         private void LoadUnconfirmedLogEntries()
@@ -82,7 +81,7 @@ namespace SysInventory.LogMessages.ViewModels
             try
             {
                 UpdateSettings();
-                var foundLogEntries = _logRepository.GetAll(string.Empty, new Dictionary<string, object>());
+                var foundLogEntries = DataRepository.GetAll(string.Empty, new Dictionary<string, object>());
                 PopulateUnconfirmedLogEntriesCollection(foundLogEntries);
             }
             catch (Exception ex)
@@ -95,7 +94,7 @@ namespace SysInventory.LogMessages.ViewModels
             try
             {
                 UpdateSettings();
-                var foundLogEntries = _logRepository.GetAll();
+                var foundLogEntries = DataRepository.GetAll();
                 PopulateUnconfirmedLogEntriesCollection(foundLogEntries);
             }
             catch (Exception ex)
@@ -108,7 +107,7 @@ namespace SysInventory.LogMessages.ViewModels
         {
             try
             {
-                _logRepository.Update(SelectedLogEntry);
+                DataRepository.Update(SelectedLogEntry);
                 LoadUnconfirmedLogEntries();
             }
             catch (Exception e)
@@ -116,10 +115,10 @@ namespace SysInventory.LogMessages.ViewModels
                 MessageBox.Show("An error occured while confirming the log entry: " + e.Message);
             }
         }
-        private void OpenAddDialog()
+        private void OpenAddLogEntryDialog()
         {
             UpdateSettings();
-            new AddEntryDialog().ShowDialog();
+            new AddLogEntryDialog().ShowDialog();
             LoadUnconfirmedLogEntries();
         }
         private void LoadDuplicateLogEntries()
@@ -139,26 +138,26 @@ namespace SysInventory.LogMessages.ViewModels
         private void PopulateUnconfirmedLogEntriesCollection(IEnumerable<LogEntry> entriesToAdd)
         {
             UnconfirmedLogEntries.Clear();
-            foreach (var duplicate in entriesToAdd)
-                UnconfirmedLogEntries.Add(duplicate);
+            foreach (var logEntry in entriesToAdd)
+                UnconfirmedLogEntries.Add(logEntry);
         }
         public void ShowInfoMessage() => MessageBox.Show($"Product: SysInventory {Environment.NewLine}Version: {Assembly.GetExecutingAssembly().GetName().Version} {Environment.NewLine}Author: Gabriel Weibel{Environment.NewLine}Support: admin@gaebster.ch");
         private void ShowLogEntryDetails()
         {
-            var foundEntry = _logRepository.GetSingle(SelectedLogEntry.Id);
+            var foundEntry = DataRepository.GetSingle(SelectedLogEntry.Id);
             MessageBox.Show(foundEntry?.ToString());
         }
         private void DeleteLogEntry()
         {
-            _logRepository.Delete(SelectedLogEntry);
+            DataRepository.Delete(SelectedLogEntry);
             LoadUnconfirmedLogEntries();
         }
         private void CountLogEntries()
         {
-            if (string.IsNullOrEmpty(WhereCrit) || string.IsNullOrEmpty(Values)) MessageBox.Show($"found {_logRepository.Count()} entries");
+            if (string.IsNullOrEmpty(WhereCrit) || string.IsNullOrEmpty(Values)) MessageBox.Show($"found {DataRepository.Count()} entries");
             else
             {
-                var count = _logRepository.Count(WhereCrit, ParseSearchValues());
+                var count = DataRepository.Count(WhereCrit, ParseSearchValues());
                 if(count > -1) MessageBox.Show($"found {count} entries");
             }
         }
@@ -167,21 +166,14 @@ namespace SysInventory.LogMessages.ViewModels
             if (string.IsNullOrEmpty(WhereCrit) || string.IsNullOrEmpty(Values)) LoadUnconfirmedLogEntries();
             else
             {
-                var foundEntries = _logRepository.GetAll(WhereCrit, ParseSearchValues());
+                var foundEntries = DataRepository.GetAll(WhereCrit, ParseSearchValues());
                 PopulateUnconfirmedLogEntriesCollection(foundEntries);
             }
-
         }
-        private Dictionary<string, object> ParseSearchValues()
+        private void OpenLocationWindow()
         {
-            var queryParams = new Dictionary<string, object>();
-            foreach (var keyValuePair in Values.Split(';'))
-            {
-                var keyValuePairParsed = keyValuePair.Split('|');
-                if (keyValuePairParsed.Length == 2) queryParams.Add(keyValuePairParsed[0], keyValuePairParsed[1]);
-                else return new Dictionary<string, object>();
-            }
-            return queryParams;
+            UpdateSettings();
+            new Locations().ShowDialog();
         }
     }
 }

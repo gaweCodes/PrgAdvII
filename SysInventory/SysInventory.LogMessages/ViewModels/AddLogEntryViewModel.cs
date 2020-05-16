@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Windows;
-using SysInventory.LogMessages.DataAccess;
 using SysInventory.LogMessages.DataAccess.AdoNet;
 using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class AddLogEntryViewModel
+    internal class AddLogEntryViewModel : BaseViewModel<LogEntry>
     {
-        private readonly IRepositoryBase<LogEntry> _logRepository;
         private string _pod;
         public string PoD
         {
@@ -55,14 +53,14 @@ namespace SysInventory.LogMessages.ViewModels
         {
             SaveCommand = new RelayCommand<Window>(Save, CanSave);
             CancelCommand = new RelayCommand<Window>(Cancel);
-            _logRepository = new LogRepository();
+            DataRepository = new LogRepository();
         }
         private void Save(Window windowToClose)
         {
 
             try
             {
-                _logRepository.Add(new LogEntry
+                DataRepository.Add(new LogEntry
                     {PoD = PoD, Message = Message, Severity = Severity, Hostname = Hostname});
             }
             catch (Exception e)
