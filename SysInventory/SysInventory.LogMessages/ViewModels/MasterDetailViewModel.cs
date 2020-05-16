@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using SysInventory.LogMessages.Annotations;
 
 namespace SysInventory.LogMessages.ViewModels
@@ -46,5 +48,21 @@ namespace SysInventory.LogMessages.ViewModels
         public IRelayCommand CreateItemCommand { get; set; }
         public IRelayCommand DeleteItemCommand { get; set; }
         public bool IsItemSelected() => SelectedItem != null;
+        protected void PopulateShowingItemsList(IEnumerable<TCollection> listToAdd)
+        {
+            ShowingItems.Clear();
+            foreach (var itemm in listToAdd) ShowingItems.Add(itemm);
+        }
+        protected T GetSingleEntry(Guid id) => DataRepository.GetSingle(id);
+        protected void CountItems()
+        {
+            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) MessageBox.Show($"found {DataRepository.Count()} entries");
+            else
+            {
+                var count = DataRepository.Count(WhereCriteria, ParseSearchValues());
+                if (count > -1) MessageBox.Show($"found {count} entries");
+            }
+        }
+        protected abstract void SearchItems();
     }
 }

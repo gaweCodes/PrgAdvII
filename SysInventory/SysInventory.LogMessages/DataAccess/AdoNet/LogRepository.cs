@@ -9,8 +9,8 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
 {
     internal class LogRepository : AdoNetBaseRepository<LogEntry>
     {
-        public LogRepository() : base("Log") { }
-        public override LogEntry GetSingle<TKey>(TKey pkValue)
+        private static readonly string _tableName = "Log";
+        public LogRepository() : base(_tableName, $"SELECT L.LogId, P.Name, Loc.Name, D.Hostname, L.Severity, L.CreatedAt, L.Message FROM {_tableName} AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk") { } public override LogEntry GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -31,10 +31,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 {
                     cmd.CommandText = "LogMessageAdd";
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@podName", entity.PoD);
-                    cmd.Parameters.AddWithValue("@hostname", entity.Hostname);
-                    cmd.Parameters.AddWithValue("@lvl", entity.Severity);
-                    cmd.Parameters.AddWithValue("@msg", entity.Message);
+                    AddParameters(cmd, entity);
                     var result = cmd.ExecuteNonQuery();
                     if (result == -1) MessageBox.Show("The device or pod could not be found");
                 }
@@ -73,17 +70,10 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    if (parameterValues.Count == 0 && string.IsNullOrWhiteSpace(whereCondition)) cmd.CommandText = "select id, pod, location, hostname, severity, timestamp, message from v_logentries order by timestamp";
-                    else
-                    {
-                        cmd.CommandText = $"SELECT L.LogId, P.Name, Loc.Name, D.Hostname, L.Severity, L.CreatedAt, L.Message FROM dbo.[{TableName}] AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk WHERE {whereCondition}";
-                        foreach (var keyValuePair in parameterValues) cmd.Parameters.AddWithValue(keyValuePair.Key, keyValuePair.Value);
-                    }
-
                     try
                     {
-                        using (var reader = cmd.ExecuteReader())
-                            PopulateLoadedObjectList(reader);
+                        BuildCommand(cmd, whereCondition, parameterValues);
+                        using (var reader = cmd.ExecuteReader()) PopulateLoadedObjectList(reader);
                     }
                     catch (Exception ex)
                     {
@@ -101,7 +91,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT L.LogId, P.Name, Loc.Name, D.Hostname, L.Severity, L.CreatedAt, L.Message FROM dbo.[{TableName}] AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk";
+                    cmd.CommandText = $"{SelectBase}";
                     using (var reader = cmd.ExecuteReader()) PopulateLoadedObjectList(reader);
                 }
             }
@@ -114,7 +104,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT count(*) FROM dbo.[{TableName}] AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk WHERE {whereCondition}";
+                    cmd.CommandText = $"SELECT count(*) FROM {TableName} AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk WHERE {whereCondition}";
                     foreach (var keyValuePair in parameterValues) cmd.Parameters.AddWithValue(keyValuePair.Key, keyValuePair.Value);
                     long numberOfEntries;
                     try
@@ -129,6 +119,13 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                     return numberOfEntries;
                 }
             }
+        }
+        protected override void AddParameters(SqlCommand cmd, LogEntry entity)
+        {
+            cmd.Parameters.AddWithValue("@podName", entity.PoD);
+            cmd.Parameters.AddWithValue("@hostname", entity.Hostname);
+            cmd.Parameters.AddWithValue("@lvl", entity.Severity);
+            cmd.Parameters.AddWithValue("@msg", entity.Message);
         }
         private void PopulateLoadedObjectList(IDataReader reader)
         {
@@ -145,5 +142,16 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             Timestamp = DateTime.Parse(reader.GetValue(5).ToString()),
             Message = reader.GetValue(6).ToString()
         };
+        private void BuildCommand(SqlCommand cmd, string whereCondition, Dictionary<string, object> parameterValues)
+        {
+            if (parameterValues.Count == 0 && string.IsNullOrWhiteSpace(whereCondition)) 
+                cmd.CommandText = "select id, pod, location, hostname, severity, timestamp, message from v_logentries order by timestamp";
+            else
+            {
+                cmd.CommandText = $"{SelectBase} WHERE {whereCondition}";
+                foreach (var keyValuePair in parameterValues) 
+                    cmd.Parameters.AddWithValue(keyValuePair.Key, keyValuePair.Value);
+            }
+        }
     }
 }

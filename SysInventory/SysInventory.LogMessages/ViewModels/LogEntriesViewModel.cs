@@ -50,8 +50,8 @@ namespace SysInventory.LogMessages.ViewModels
             FindDuplicateLogEntriesCommand = new RelayCommand(LoadDuplicateLogEntries, CanConnectToDatabase);
             LoadAllItemsCommand = new RelayCommand(LoadAllLogEntries, CanConnectToDatabase);
             ShowInfoMessageCommand = new RelayCommand(ShowInfoMessage);
-            CountItemsCommand = new RelayCommand(CountLogEntries, CanConnectToDatabase);
-            LoadFilteredItemsCommand = new RelayCommand(SearchLogEntries, CanConnectToDatabase);
+            CountItemsCommand = new RelayCommand(CountItems, CanConnectToDatabase);
+            LoadFilteredItemsCommand = new RelayCommand(SearchItems, CanConnectToDatabase);
             OpenLocationWindowCommand = new RelayCommand(OpenLocationWindow, CanConnectToDatabase);
         }
         private bool CanConnectToDatabase() => !string.IsNullOrWhiteSpace(ConnectionString);
@@ -61,26 +61,14 @@ namespace SysInventory.LogMessages.ViewModels
             {
                 UpdateSettings();
                 var foundLogEntries = DataRepository.GetAll(string.Empty, new Dictionary<string, object>());
-                PopulateUnconfirmedLogEntriesCollection(foundLogEntries);
+                PopulateShowingItemsList(foundLogEntries);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An error occured while loading the log entries: " + ex.Message);
             }
         }
-        private void LoadAllLogEntries()
-        {
-            try
-            {
-                UpdateSettings();
-                var foundLogEntries = DataRepository.GetAll();
-                PopulateUnconfirmedLogEntriesCollection(foundLogEntries);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occured while loading the log entries: " + ex.Message);
-            }
-        }
+        private void ShowLogEntryDetails() => MessageBox.Show(GetSingleEntry(SelectedItem.Id).ToString());
         private void ConfirmLogEntry()
         {
             try
@@ -91,6 +79,19 @@ namespace SysInventory.LogMessages.ViewModels
             catch (Exception e)
             {
                 MessageBox.Show("An error occured while confirming the log entry: " + e.Message);
+            }
+        }
+        private void LoadAllLogEntries()
+        {
+            try
+            {
+                UpdateSettings();
+                var foundLogEntries = DataRepository.GetAll();
+                PopulateShowingItemsList(foundLogEntries);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occured while loading the log entries: " + ex.Message);
             }
         }
         private void OpenAddLogEntryDialog()
@@ -106,52 +107,29 @@ namespace SysInventory.LogMessages.ViewModels
             var duplicateChecker = new DuplicateChecker();
             var duplicates = duplicateChecker.FindDuplicates(ShowingItems);
             var castedDuplicates = duplicates.Where(entity => entity is LogEntry).Cast<LogEntry>();
-            PopulateUnconfirmedLogEntriesCollection(castedDuplicates);
+            PopulateShowingItemsList(castedDuplicates);
         }
         private void UpdateSettings()
         {
             Settings.Default.ConnectionString = ConnectionString;
             Settings.Default.Save();
         }
-        private void PopulateUnconfirmedLogEntriesCollection(IEnumerable<LogEntry> entriesToAdd)
-        {
-            ShowingItems.Clear();
-            foreach (var logEntry in entriesToAdd)
-                ShowingItems.Add(logEntry);
-        }
-        public void ShowInfoMessage() => MessageBox.Show($"Product: SysInventory {Environment.NewLine}Version: {Assembly.GetExecutingAssembly().GetName().Version} {Environment.NewLine}Author: Gabriel Weibel{Environment.NewLine}Support: admin@gaebster.ch");
-        private void ShowLogEntryDetails()
-        {
-            var foundEntry = DataRepository.GetSingle(SelectedItem.Id);
-            MessageBox.Show(foundEntry?.ToString());
-        }
+        public void ShowInfoMessage() => MessageBox.Show(
+            $"Product: SysInventory {Environment.NewLine}Version: {Assembly.GetExecutingAssembly().GetName().Version} {Environment.NewLine}Author: Gabriel Weibel{Environment.NewLine}Support: admin@gaebster.ch");
         private void DeleteLogEntry()
         {
             DataRepository.Delete(SelectedItem);
             LoadUnconfirmedLogEntries();
         }
-        private void CountLogEntries()
-        {
-            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) MessageBox.Show($"found {DataRepository.Count()} entries");
-            else
-            {
-                var count = DataRepository.Count(WhereCriteria, ParseSearchValues());
-                if(count > -1) MessageBox.Show($"found {count} entries");
-            }
-        }
-        private void SearchLogEntries()
-        {
-            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadUnconfirmedLogEntries();
-            else
-            {
-                var foundEntries = DataRepository.GetAll(WhereCriteria, ParseSearchValues());
-                PopulateUnconfirmedLogEntriesCollection(foundEntries);
-            }
-        }
         private void OpenLocationWindow()
         {
             UpdateSettings();
             new Locations().ShowDialog();
+        }
+        protected override void SearchItems()
+        {
+            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadUnconfirmedLogEntries();
+            else PopulateShowingItemsList(DataRepository.GetAll(WhereCriteria, ParseSearchValues()));
         }
     }
 }

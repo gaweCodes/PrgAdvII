@@ -15,26 +15,41 @@ namespace SysInventory.LogMessages.ViewModels
         public LocationsViewModel()
         {
             DataRepository = new LocationRepository();
-            LoadFilteredItemsCommand = new RelayCommand(SearchLocations);
-            LoadAllItemsCommand = new RelayCommand(LoadLocationTree);
+            LoadFilteredItemsCommand = new RelayCommand(SearchItems);
+            LoadAllItemsCommand = new RelayCommand(LoadLocationsTree);
             LoadDetailsCommand = new RelayCommand<LocationTreeViewitem>(ShowLocationDetails);
-            CountItemsCommand = new RelayCommand(CountLocations);
+            CountItemsCommand = new RelayCommand(CountItems);
             CreateItemCommand = new RelayCommand(CreateNewLocation);
             ShowingItems = new ObservableCollection<LocationTreeViewitem>();
             SaveCurrentItemCommand = new RelayCommand(SaveCurrentLocation, IsItemSelected);
             DeleteItemCommand = new RelayCommand(DeleteSelectedLocation, IsItemSelected);
-            LoadLocationTree();
+            LoadLocationsTree();
         }
-        private void LoadLocationTree()
+        private void LoadLocationsTree()
         {
-            var locationList = DataRepository.GetAll();
-            PopulateLocationTree(locationList);
+            try
+            {
+                var locationList = DataRepository.GetAll();
+                var tree = locationList.GenerateTree(_ => _.Id, _ => _.ParentId).ToList();
+                var listToAdd = new List<LocationTreeViewitem>
+                {
+                    new LocationTreeViewitem
+                    {
+                        Item = new Location {Name = "Locations"},
+                        Children = tree
+                    }
+                };
+                PopulateShowingItemsList(listToAdd);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occured while loading the locations: " + ex.Message);
+            }
         }
         private void ShowLocationDetails(LocationTreeViewitem selectedItem)
         {
             if (selectedItem?.Item == null || selectedItem.Item.Id == Guid.Empty) return;
-            var locationDetails = DataRepository.GetSingle(selectedItem.Item.Id);
-            SelectedItem = locationDetails;
+            SelectedItem = GetSingleEntry(selectedItem.Item.Id);
         }
         private void SaveCurrentLocation()
         {
@@ -45,13 +60,13 @@ namespace SysInventory.LogMessages.ViewModels
             }
             if(SelectedItem.Id == Guid.Empty) DataRepository.Add(SelectedItem);
             else DataRepository.Update(SelectedItem);
-            LoadLocationTree();
+            LoadLocationsTree();
             SelectedItem = null;
         }
         private void CreateNewLocation() => SelectedItem = new Location {ParentId = SelectedItem?.Id};
-        private void SearchLocations()
+        protected override void SearchItems()
         {
-            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadLocationTree();
+            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadLocationsTree();
             else
             {
                 var foundEntries = DataRepository.GetAll(WhereCriteria, ParseSearchValues());
@@ -60,30 +75,11 @@ namespace SysInventory.LogMessages.ViewModels
                 MessageBox.Show(messageText);
             }
         }
-        private void CountLocations()
-        {
-            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) MessageBox.Show($"found {DataRepository.Count()} entries");
-            else
-            {
-                var count = DataRepository.Count(WhereCriteria, ParseSearchValues());
-                if (count > -1) MessageBox.Show($"found {count} entries");
-            }
-        }
         private void DeleteSelectedLocation()
         {
             DataRepository.Delete(SelectedItem);
-            LoadLocationTree();
+            LoadLocationsTree();
             SelectedItem = null;
-        }
-        private void PopulateLocationTree(IEnumerable<Location> locationList)
-        {
-            ShowingItems.Clear();
-            var tree = locationList.GenerateTree(_ => _.Id, _ => _.ParentId).ToList();
-            ShowingItems.Add(new LocationTreeViewitem
-            {
-                Item = new Location { Name = "Locations" },
-                Children = tree
-            });
         }
     }
 }

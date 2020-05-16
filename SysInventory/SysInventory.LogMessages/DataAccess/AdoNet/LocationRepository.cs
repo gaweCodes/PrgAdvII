@@ -9,10 +9,9 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
 {
     internal class LocationRepository : AdoNetBaseRepository<Location>
     {
-        private readonly string _selectBase;
         private readonly string _orderByBase = "ORDER BY Location.Name";
-        public LocationRepository() : base("Location") => _selectBase =
-            $"select LocationId, Location.Name, PoD.Name, PodId, ParentId from {TableName} INNER JOIN PoD on (PoDFk = PodId)";
+        private static readonly string _tableName = "Location";
+        public LocationRepository() : base(_tableName, $"select LocationId, Location.Name, PoD.Name, PodId, ParentId from {_tableName} INNER JOIN PoD on (PoDFk = PodId)") { }
         public override Location GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -20,7 +19,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"{_selectBase} WHERE LocationId = '{pkValue}'";
+                    cmd.CommandText = $"{SelectBase} WHERE LocationId = '{pkValue}'";
                     using (var reader = cmd.ExecuteReader()) return reader.Read() ? BuildLocation(reader) : null;
                 }
             }
@@ -86,7 +85,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                     if (parameterValues.Count == 0 && string.IsNullOrWhiteSpace(whereCondition)) cmd.CommandText = "select id, pod, location, hostname, severity, timestamp, message from v_logentries order by timestamp";
                     else
                     {
-                        cmd.CommandText = $"{_selectBase} WHERE {whereCondition} {_orderByBase}";
+                        cmd.CommandText = $"{SelectBase} WHERE {whereCondition} {_orderByBase}";
                         foreach (var keyValuePair in parameterValues) cmd.Parameters.AddWithValue(keyValuePair.Key, keyValuePair.Value);
                     }
                     try
@@ -109,7 +108,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"{_selectBase} {_orderByBase}";
+                    cmd.CommandText = $"{SelectBase} {_orderByBase}";
                     using (var reader = cmd.ExecuteReader()) PopulateLoadedObjectList(reader);
                 }
             }
@@ -155,7 +154,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             if (!reader.IsDBNull(4)) location.ParentId = reader.GetGuid(4);
             return location;
         }
-        private static void AddParameters(SqlCommand cmd, Location entity)
+        protected override void AddParameters(SqlCommand cmd, Location entity)
         {
             cmd.Parameters.AddWithValue("Name", entity.Name);
             cmd.Parameters.AddWithValue("PoDId", entity.PoDId);

@@ -8,12 +8,14 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
     internal abstract class AdoNetBaseRepository<T> : IRepositoryBase<T>
     {
         protected readonly List<T> LoadedObjects;
+        protected readonly string SelectBase;
         public string TableName { get; }
         protected string ConnectionString { get; }
-        protected AdoNetBaseRepository(string tableName)
+        protected AdoNetBaseRepository(string tableName, string selectBase)
         {
             ConnectionString = Settings.Default.ConnectionString;
             TableName = tableName;
+            SelectBase = selectBase;
             LoadedObjects = new List<T>();
         }
         public abstract T GetSingle<TKey>(TKey pkValue);
@@ -38,5 +40,6 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 }
             }
         }
+        protected abstract void AddParameters(SqlCommand cmd, T entity);
     }
 }
