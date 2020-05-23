@@ -2,7 +2,7 @@
 
 namespace SysInventory.LogMessages.Models
 {
-    public sealed class Location
+    public sealed class Location : IIdentifiable
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -5,10 +5,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using SysInventory.LogMessages.Annotations;
+using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal abstract class MasterDetailViewModel<T, TCollection> : BaseViewModel<T>
+    internal abstract class MasterDetailViewModel<T, TCollection> : BaseViewModel<T> where T : IIdentifiable
     {
         private T _selectedItem;
         public event PropertyChangedEventHandler PropertyChanged;

@@ -56,7 +56,6 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void Save(Window windowToClose)
         {
-
             try
             {
                 DataRepository.Add(new LogEntry

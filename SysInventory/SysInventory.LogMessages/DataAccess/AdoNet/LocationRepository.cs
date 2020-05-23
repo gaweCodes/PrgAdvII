@@ -9,9 +9,10 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
 {
     internal class LocationRepository : AdoNetBaseRepository<Location>
     {
-        private readonly string _orderByBase = "ORDER BY Location.Name";
+        private static readonly string _orderByBase = "ORDER BY Location.Name";
         private static readonly string _tableName = "Location";
-        public LocationRepository() : base(_tableName, $"select LocationId, Location.Name, PoD.Name, PodId, ParentId from {_tableName} INNER JOIN PoD on (PoDFk = PodId)") { }
+        private static readonly string _sqlIdField = "LocationId";
+        public LocationRepository() : base(_tableName, $"select {_sqlIdField}, Location.Name, PoD.Name, PodId, ParentId from {_tableName} INNER JOIN PoD on (PoDFk = PodId)", _sqlIdField) { }
         public override Location GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -37,25 +38,6 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                     AddParameters(cmd, entity);
                     var result = cmd.ExecuteNonQuery();
                     if (result == -1) MessageBox.Show("The given pod doens't exist");
-                }
-            }
-        }
-        public override void Delete(Location entity)
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"delete from {TableName} where Locationid = '{entity.Id}'";
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occured while deleting the location: " + ex.Message);
-                    }
                 }
             }
         }
@@ -154,7 +136,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             if (!reader.IsDBNull(4)) location.ParentId = reader.GetGuid(4);
             return location;
         }
-        protected override void AddParameters(SqlCommand cmd, Location entity)
+        private void AddParameters(SqlCommand cmd, Location entity)
         {
             cmd.Parameters.AddWithValue("Name", entity.Name);
             cmd.Parameters.AddWithValue("PoDId", entity.PoDId);

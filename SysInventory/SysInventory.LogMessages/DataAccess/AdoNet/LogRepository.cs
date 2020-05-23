@@ -10,7 +10,9 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
     internal class LogRepository : AdoNetBaseRepository<LogEntry>
     {
         private static readonly string _tableName = "Log";
-        public LogRepository() : base(_tableName, $"SELECT L.LogId, P.Name, Loc.Name, D.Hostname, L.Severity, L.CreatedAt, L.Message FROM {_tableName} AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk") { } public override LogEntry GetSingle<TKey>(TKey pkValue)
+        private static readonly string _sqlIdField = "LogId";
+        public LogRepository() : base(_tableName, $"SELECT L.{_sqlIdField}, P.Name, Loc.Name, D.Hostname, L.Severity, L.CreatedAt, L.Message FROM {_tableName} AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk", _sqlIdField) { }
+        public override LogEntry GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -34,18 +36,6 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                     AddParameters(cmd, entity);
                     var result = cmd.ExecuteNonQuery();
                     if (result == -1) MessageBox.Show("The device or pod could not be found");
-                }
-            }
-        }
-        public override void Delete(LogEntry entity)
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"delete from {TableName} where Logid = '{entity.Id}'";
-                    cmd.ExecuteNonQuery();
                 }
             }
         }
@@ -120,7 +110,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 }
             }
         }
-        protected override void AddParameters(SqlCommand cmd, LogEntry entity)
+        private void AddParameters(SqlCommand cmd, LogEntry entity)
         {
             cmd.Parameters.AddWithValue("@podName", entity.PoD);
             cmd.Parameters.AddWithValue("@hostname", entity.Hostname);

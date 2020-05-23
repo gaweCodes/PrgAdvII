@@ -3,7 +3,7 @@ using DuplicateCheckerLib;
 
 namespace SysInventory.LogMessages.Models
 {
-    public sealed class LogEntry : IEntity, IEquatable<LogEntry>
+    public sealed class LogEntry : IEntity, IEquatable<LogEntry>, IIdentifiable
     {
         public Guid Id { get; set; }
         public string PoD { get; set; }
