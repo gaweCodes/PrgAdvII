@@ -10,9 +10,9 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
     internal class LocationRepository : AdoNetBaseRepository<Location>
     {
         private static readonly string _orderByBase = "ORDER BY Location.Name";
-        private static readonly string _tableName = "Location";
-        private static readonly string _sqlIdField = "LocationId";
-        public LocationRepository() : base(_tableName, $"select {_sqlIdField}, Location.Name, PoD.Name, PodId, ParentId from {_tableName} INNER JOIN PoD on (PoDFk = PodId)", _sqlIdField) { }
+        public override string TableName { get; } = "Location";
+        protected override string SqlIdField { get; } = "LocationId";
+        protected override string SelectBase { get; } = "select LocationId, Location.Name, PoD.Name, PodId, ParentId from Location INNER JOIN PoD on (PoDFk = PodId)";
         public override Location GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))

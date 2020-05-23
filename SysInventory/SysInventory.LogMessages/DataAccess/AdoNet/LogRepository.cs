@@ -9,9 +9,10 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
 {
     internal class LogRepository : AdoNetBaseRepository<LogEntry>
     {
-        private static readonly string _tableName = "Log";
-        private static readonly string _sqlIdField = "LogId";
-        public LogRepository() : base(_tableName, $"SELECT L.{_sqlIdField}, P.Name, Loc.Name, D.Hostname, L.Severity, L.CreatedAt, L.Message FROM {_tableName} AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk", _sqlIdField) { }
+        public override string TableName { get; } = "Log";
+        protected override string SqlIdField { get; } = "LogId";
+        protected override string SelectBase { get; } =
+            "SELECT L.LogId, P.Name, Loc.Name, D.Hostname, L.Severity, L.CreatedAt, L.Message FROM Log AS L INNER JOIN dbo.Device AS D ON L.DeviceFk = D.DeviceId INNER JOIN dbo.Location AS Loc ON Loc.LocationId = D.LocationFk INNER JOIN dbo.PoD AS P ON P.PodId = Loc.PodFk";
         public override LogEntry GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))

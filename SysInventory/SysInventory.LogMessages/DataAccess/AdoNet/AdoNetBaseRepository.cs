@@ -10,16 +10,13 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
     internal abstract class AdoNetBaseRepository<T> : IRepositoryBase<T> where T : IIdentifiable
     {
         protected readonly List<T> LoadedObjects;
-        protected readonly string SelectBase;
-        protected readonly string SqlIdField;
-        public string TableName { get; }
+        protected abstract string SelectBase { get; }
+        protected abstract string SqlIdField { get; }
+        public abstract string TableName { get; }
         protected string ConnectionString { get; }
-        protected AdoNetBaseRepository(string tableName, string selectBase, string sqlIdField)
+        protected AdoNetBaseRepository()
         {
             ConnectionString = Settings.Default.ConnectionString;
-            TableName = tableName;
-            SelectBase = selectBase;
-            SqlIdField = sqlIdField;
             LoadedObjects = new List<T>();
         }
         public abstract T GetSingle<TKey>(TKey pkValue);
