@@ -49,8 +49,9 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandText = entity.ParentId.HasValue
-                        ? $"UPDATE {TableName} SET Name = @Name, Parentid = @ParentId, PodFk = @PoDId WHERE LocationId = '{entity.Id}'"
-                        : $"UPDATE {TableName} sET Name = @Name, PodFk = @PoDId)";
+                        ? $"UPDATE {TableName} SET Name = @Name, Parentid = @ParentId, PodFk = @PoDId"
+                        : $"UPDATE {TableName} SET Name = @Name, PodFk = @PoDId";
+                    cmd.CommandText += $" WHERE LocationId = '{entity.Id}'";
                     AddParameters(cmd, entity);
                     var result = cmd.ExecuteNonQuery();
                     if (result == -1) MessageBox.Show("The given pod doens't exist");
