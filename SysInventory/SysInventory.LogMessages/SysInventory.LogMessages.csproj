@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +57,14 @@
     <Compile Include="DataAccess\AdoNet\LocationRepository.cs" />
     <Compile Include="DataAccess\AdoNet\LogRepository.cs" />
     <Compile Include="DataAccess\IRepositoryBase.cs" />
+    <Compile Include="DataAccess\LINQ\LinqBaseRepository.cs" />
+    <Compile Include="DataAccess\LINQ\LocationRepository.cs" />
+    <Compile Include="DataAccess\LINQ\LogRepository.cs" />
+    <Compile Include="DataAccess\LINQ\SysInventoryLinqSqlContext.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SysInventoryLinqSqlContext.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="IRelayCommand.cs" />
     <Compile Include="Locations.xaml.cs">
@@ -68,6 +77,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="RelayCommandGeneric.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="RepositoryFactory.cs" />
     <Compile Include="ViewModels\AddLogEntryViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\LocationsViewModel.cs" />
@@ -104,10 +114,19 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="app.config" />
+    <None Include="DataAccess\LINQ\SysInventoryLinqSqlContext.dbml.layout">
+      <DependentUpon>SysInventoryLinqSqlContext.dbml</DependentUpon>
+    </None>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="DataAccess\LINQ\SysInventoryLinqSqlContext.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>SysInventoryLinqSqlContext.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -119,6 +138,8 @@
       <Name>DuplicateCheckerLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,5 @@
-﻿using SysInventory.LogMessages.DataAccess;
+﻿using System.Collections.Generic;
+using SysInventory.LogMessages.DataAccess;
 using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
@@ -7,5 +8,7 @@ namespace SysInventory.LogMessages.ViewModels
     {
         protected IRepositoryBase<T> DataRepository { get; set; }
         public IRelayCommand SaveCurrentItemCommand { get; set; }
+        public List<string> Stratgies { get; } = new List<string> { "AdoNet", "LINQ" };
+        protected readonly RepositoryFactory Factory = new RepositoryFactory();
     }
 }

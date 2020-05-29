@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using SysInventory.LogMessages.Models;
+using System.Linq.Expressions;
 
 namespace SysInventory.LogMessages.DataAccess
 {
-    internal interface IRepositoryBase<T> where T : IIdentifiable
+    internal interface IRepositoryBase<T>
     {
         /// <summary>
         /// Adds a model object to the database
@@ -12,15 +13,28 @@ namespace SysInventory.LogMessages.DataAccess
         /// <param name="entity">object to sotre</param>
         void Add(T entity);
         /// <summary>
+        /// Counts object of given type
+        /// </summary>
+        /// <returns></returns>
+        long Count();
+        /// <summary>
+        /// Counts all the objects which matches the where criteria
+        /// </summary>
+        /// <param name="whereCondition">where criteria as string</param>
+        /// <param name="parameterValues">Parameter-Values</param>
+        /// <returns></returns>
+        long Count(string whereCondition, Dictionary<string, object> parameterValues);
+        /// <summary>
+        /// Counts all the objects which matches the where criteria
+        /// </summary>
+        /// <param name="whereExpression">where criteria as linq expression</param>
+        /// <returns></returns>
+        long Count(Expression<Func<T, bool>> whereExpression);
+        /// <summary>
         /// Deletes a model object from database
         /// </summary>
         /// <param name="entity">object to delete</param>
         void Delete(T entity);
-        /// <summary>
-        /// Updates an object
-        /// </summary>
-        /// <param name="entity">object to update</param>
-        void Update(T entity);
         /// <summary>
         /// Returns all object of this type
         /// </summary>
@@ -34,6 +48,12 @@ namespace SysInventory.LogMessages.DataAccess
         /// <returns></returns>
         IQueryable<T> GetAll(string whereCondition, Dictionary<string, object> parameterValues);
         /// <summary>
+        /// Returns an IQueryble of model objects of type T that were loaded according to the Where condition.
+        /// </summary>
+        /// <param name="whereExpression">Wherecondition as linq expression</param>
+        /// <returns></returns>
+        IQueryable<T> GetAll(Expression<Func<T, bool>> whereExpression);
+        /// <summary>
         /// Returns a single model object of type T, which is loaded using the transferred PrimaryKey.
         /// </summary>
         /// <typeparam name="TKey">PrimaryKey type</typeparam>
@@ -41,16 +61,9 @@ namespace SysInventory.LogMessages.DataAccess
         /// <returns>found Model-Object or null</returns>
         T GetSingle<TKey>(TKey pkValue);
         /// <summary>
-        /// Counts all the objects which matches the where criteria
+        /// Updates an object
         /// </summary>
-        /// <param name="whereCondition">where criteria as string</param>
-        /// <param name="parameterValues">Parameter-Values</param>
-        /// <returns></returns>
-        long Count(string whereCondition, Dictionary<string, object> parameterValues);
-        /// <summary>
-        /// Counts object of given type
-        /// </summary>
-        /// <returns></returns>
-        long Count();
+        /// <param name="entity">object to update</param>
+        void Update(T entity);
     }
 }

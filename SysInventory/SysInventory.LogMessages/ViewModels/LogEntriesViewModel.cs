@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using DuplicateCheckerLib;
-using SysInventory.LogMessages.DataAccess.AdoNet;
 using SysInventory.LogMessages.Models;
 using SysInventory.LogMessages.Properties;
 
@@ -40,7 +38,8 @@ namespace SysInventory.LogMessages.ViewModels
                 Settings.Default.Save();
             }
             ConnectionString = Settings.Default.ConnectionString;
-            DataRepository = new LogRepository();
+            ConnectionStrategy = "AdoNet";
+            DataRepository = Factory.GetLogEntryRepository(ConnectionStrategy);
             ShowingItems = new ObservableCollection<LogEntry>();
             LoadFilteredItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
             SaveCurrentItemCommand = new RelayCommand(ConfirmLogEntry, IsItemSelected);
@@ -113,10 +112,26 @@ namespace SysInventory.LogMessages.ViewModels
             UpdateSettings();
             new Locations().ShowDialog();
         }
-        protected override void SearchItems()
+        protected virtual void SearchItems()
         {
             if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadUnconfirmedLogEntries();
-            else PopulateShowingItemsList(DataRepository.GetAll(WhereCriteria, ParseSearchValues()));
+            else
+            {
+                PopulateShowingItemsList(ConnectionStrategy == "AdoNet"
+                    ? DataRepository.GetAll(WhereCriteria, ParseSearchValues())
+                    : DataRepository.GetAll(null));
+            }
+        }
+        private string _connectionStrategy;
+        public string ConnectionStrategy
+        {
+            get => _connectionStrategy;
+            set
+            {
+                _connectionStrategy = value;
+                Strategy = value;
+                DataRepository = Factory.GetLogEntryRepository(value);
+            }
         }
     }
 }

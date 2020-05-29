@@ -10,8 +10,8 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
 {
     internal class LogRepository : AdoNetBaseRepository<LogEntry>
     {
-        public override string TableName { get; } = "v_LogEntries";
-        protected override string SqlIdField { get; } = "id";
+        public override string TableName { get; protected set; } = "v_LogEntries";
+        protected override string SqlIdField { get; set; } = "id";
         protected virtual string SelectBase { get; } = "SELECT * FROM v_logEntries ";
         public override void Add(LogEntry entity)
         {
@@ -23,8 +23,9 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                     cmd.CommandText = "LogMessageAdd";
                     cmd.CommandType = CommandType.StoredProcedure;
                     AddParameters(cmd, entity);
-                    var result = cmd.ExecuteNonQuery();
-                    if (result == -1) MessageBox.Show("The device or pod could not be found");
+                    var res = cmd.ExecuteNonQuery();
+                    if(res == -1)
+                        throw new ArgumentException("The given pod or device couldn't be found.");
                 }
             }
         }
@@ -50,6 +51,12 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                     return numberOfEntries;
                 }
             }
+        }
+        public override void Delete(LogEntry entity)
+        {
+            TableName = "Log";
+            SqlIdField = "LogId";
+            base.Delete(entity);
         }
         public override IQueryable<LogEntry> GetAll()
         {

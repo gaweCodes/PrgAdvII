@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="SysInventory" Class="SysInventoryLinqSqlContextDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=EPICPCGAEBSTER;Initial Catalog=SysInventory;Integrated Security=True" SettingsObjectName="SysInventory.LogMessages.Properties.Settings" SettingsPropertyName="SysInventoryConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.[Log]" Member="Logs">
+    <Type Name="Log">
+      <Column Name="LogId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Message" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="DeviceFk" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Severity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedAt" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Confirmed" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Function Name="dbo.LogClear" Method="LogClear">
+    <Parameter Name="id" Type="System.Guid" DbType="UniqueIdentifier" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.LogMessageAdd" Method="LogMessageAdd">
+    <Parameter Name="podName" Type="System.String" DbType="NVarChar(255)" />
+    <Parameter Name="hostname" Type="System.String" DbType="NVarChar(255)" />
+    <Parameter Name="lvl" Type="System.Int32" DbType="Int" />
+    <Parameter Name="msg" Type="System.String" DbType="Text" />
+    <Return Type="System.Int32" />
+  </Function>
+</Database>

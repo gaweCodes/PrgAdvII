@@ -1,16 +1,24 @@
 ﻿using System;
+using System.Data.Linq.Mapping;
 using DuplicateCheckerLib;
 
 namespace SysInventory.LogMessages.Models
 {
+    [Table(Name = "v_LogEntries")]
     public sealed class LogEntry : IEntity, IEquatable<LogEntry>, IIdentifiable
     {
+        [Column(Name = "Id", IsPrimaryKey = true)]
         public Guid Id { get; set; }
+        [Column(Name = "pod")]
         public string PoD { get; set; }
+        [Column(Name = "location")]
         public string Location { get; set; }
+        [Column(Name = "Hostname")]
         public string Hostname { get; set; }
+        [Column(Name = "Severity")]
         public int Severity { get; set; }
         public DateTime Timestamp { get; set; }
+        [Column(Name = "Message")]
         public string Message { get; set; }
         public override bool Equals(object obj) => Equals(obj as LogEntry);
         public bool Equals(LogEntry other)
@@ -27,7 +35,7 @@ namespace SysInventory.LogMessages.Models
                 const int hashingMultiplier = 16777619;
                 var hash = hashingBase;
                 hash = (hash * hashingMultiplier) ^ Severity.GetHashCode();
-                return (hash * hashingMultiplier) ^ Message.GetHashCode();
+                return (hash * hashingMultiplier) ^ (Message != null ? Message.GetHashCode() : 0);
             }
         }
         public static bool operator ==(LogEntry logMessageA, LogEntry logMessageB)

@@ -34,5 +34,15 @@ namespace SysInventory.LogMessages.Properties {
                 this["ConnectionString"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=EPICPCGAEBSTER;Initial Catalog=SysInventory;Integrated Security=True")]
+        public string SysInventoryConnectionString {
+            get {
+                return ((string)(this["SysInventoryConnectionString"]));
+            }
+        }
     }
 }

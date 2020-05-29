@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using SysInventory.LogMessages.DataAccess.AdoNet;
 using SysInventory.LogMessages.Extensions;
 using SysInventory.LogMessages.Models;
 
@@ -12,25 +11,38 @@ namespace SysInventory.LogMessages.ViewModels
 {
     internal class LocationsViewModel : MasterDetailViewModel<Location, LocationTreeViewitem>, INotifyPropertyChanged
     {
+        private string _connectionStrategy;
+        public string ConnectionStrategy
+        {
+            get => _connectionStrategy;
+            set
+            {
+                _connectionStrategy = value;
+                this.Strategy = value;
+                DataRepository = Factory.GetLocationRepository(value);
+                LoadLocationsTree();
+            }
+        }
+
         public LocationsViewModel()
         {
-            DataRepository = new LocationRepository();
+            ShowingItems = new ObservableCollection<LocationTreeViewitem>();
+            ConnectionStrategy = "AdoNet";
+            DataRepository = Factory.GetLocationRepository(ConnectionStrategy);
             LoadFilteredItemsCommand = new RelayCommand(SearchItems);
             LoadAllItemsCommand = new RelayCommand(LoadLocationsTree);
             LoadDetailsCommand = new RelayCommand<LocationTreeViewitem>(ShowLocationDetails);
             CountItemsCommand = new RelayCommand(CountItems);
             CreateItemCommand = new RelayCommand(CreateNewLocation);
-            ShowingItems = new ObservableCollection<LocationTreeViewitem>();
             SaveCurrentItemCommand = new RelayCommand(SaveCurrentLocation, IsItemSelected);
             DeleteItemCommand = new RelayCommand(DeleteSelectedLocation, IsItemSelected);
-            LoadLocationsTree();
         }
         private void LoadLocationsTree()
         {
             try
             {
                 var locationList = DataRepository.GetAll();
-                var tree = locationList.GenerateTree(_ => _.Id, _ => _.ParentId).ToList();
+                var tree = locationList.AsEnumerable().GenerateTree(_ => _.Id, _ => _.ParentId).ToList();
                 var listToAdd = new List<LocationTreeViewitem>
                 {
                     new LocationTreeViewitem
@@ -64,7 +76,8 @@ namespace SysInventory.LogMessages.ViewModels
             SelectedItem = null;
         }
         private void CreateNewLocation() => SelectedItem = new Location {ParentId = SelectedItem?.Id};
-        protected override void SearchItems()
+
+        private void SearchItems()
         {
             if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadLocationsTree();
             else

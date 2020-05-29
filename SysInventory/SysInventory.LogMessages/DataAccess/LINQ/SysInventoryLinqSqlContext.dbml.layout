@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="SysInventoryLinqSqlContext">
+  <DataContextMoniker Name="/SysInventoryLinqSqlContextDataContext" />
+  <nestedChildShapes>
+    <classShape Id="6eb9f79a-04b8-4988-8740-b7bb50cc335c" absoluteBounds="3.5, 1.625, 2, 1.9631982421875">
+      <DataClassMoniker Name="/SysInventoryLinqSqlContextDataContext/Log" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c75a9368-1440-497f-957c-cfc32e90daa1" absoluteBounds="3.515, 2.085, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

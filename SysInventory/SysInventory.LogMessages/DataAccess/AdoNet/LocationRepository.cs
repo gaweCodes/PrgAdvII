@@ -10,10 +10,10 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
 {
     internal class LocationRepository : AdoNetBaseRepository<Location>
     {
-        private static readonly string _orderByBase = "ORDER BY Location.Name";
-        public override string TableName { get; } = "Location";
-        protected override string SqlIdField { get; } = "LocationId";
-        protected virtual string SelectBase { get; } = "select LocationId, Location.Name, PoD.Name, PodId, ParentId from Location INNER JOIN PoD on (PoDFk = PodId)";
+        private static readonly string _orderByBase = "ORDER BY Name";
+        public override string TableName { get; protected set; } = "Location";
+        protected override string SqlIdField { get; set; } = "LocationId";
+        protected virtual string SelectBase { get; } = "select LocationId, Name, PodFk, ParentId from Location";
         public override void Add(Location entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -132,13 +132,12 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             {
                 Id = reader.GetGuid(0),
                 Name = reader.GetString(1),
-                PoD = reader.GetString(2),
-                PoDId = reader.GetGuid(3)
+                PoDId = reader.GetGuid(2)
             };
-            if (!reader.IsDBNull(4)) location.ParentId = reader.GetGuid(4);
+            if (!reader.IsDBNull(3)) location.ParentId = reader.GetGuid(3);
             return location;
         }
-        private void AddParameters(SqlCommand cmd, Location entity)
+        private static void AddParameters(SqlCommand cmd, Location entity)
         {
             cmd.Parameters.AddWithValue("Name", entity.Name);
             cmd.Parameters.AddWithValue("PoDId", entity.PoDId);

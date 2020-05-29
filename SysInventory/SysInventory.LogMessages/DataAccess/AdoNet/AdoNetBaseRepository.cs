@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
 using SysInventory.LogMessages.Models;
 using SysInventory.LogMessages.Properties;
@@ -11,8 +12,8 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
     internal abstract class AdoNetBaseRepository<T> : IRepositoryBase<T> where T : IIdentifiable
     {
         protected readonly List<T> LoadedObjects;
-        protected abstract string SqlIdField { get; }
-        public abstract string TableName { get; }
+        protected abstract string SqlIdField { get; set; }
+        public abstract string TableName { get; protected set; }
         protected string ConnectionString { get; }
         protected AdoNetBaseRepository()
         {
@@ -35,7 +36,9 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             }
         }
         public abstract long Count(string whereCondition, Dictionary<string, object> parameterValues);
-        public void Delete(T entity)
+        public long Count(Expression<Func<T, bool>> whereExpression) =>
+            throw new NotSupportedException("This method is not supported for AdoNet");
+        public virtual void Delete(T entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -56,6 +59,8 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
         }
         public abstract IQueryable<T> GetAll();
         public abstract IQueryable<T> GetAll(string whereCondition, Dictionary<string, object> parameterValues);
+        public IQueryable<T> GetAll(Expression<Func<T, bool>> whereExpression) =>
+            throw new NotSupportedException("This method is not supported for AdoNet");
         public abstract T GetSingle<TKey>(TKey pkValue);
         public abstract void Update(T entity);
     }

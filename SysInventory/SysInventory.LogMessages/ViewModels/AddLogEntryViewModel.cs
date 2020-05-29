@@ -1,12 +1,21 @@
 ﻿using System;
 using System.Windows;
-using SysInventory.LogMessages.DataAccess.AdoNet;
 using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
     internal class AddLogEntryViewModel : BaseViewModel<LogEntry>
     {
+        private string _connectionStrategy;
+        public string ConnectionStrategy
+        {
+            get => _connectionStrategy;
+            set
+            {
+                _connectionStrategy = value;
+                DataRepository = Factory.GetLogEntryRepository(value);
+            }
+        }
         private string _pod;
         public string PoD
         {
@@ -52,7 +61,7 @@ namespace SysInventory.LogMessages.ViewModels
         {
             SaveCurrentItemCommand = new RelayCommand<Window>(Save, CanSave);
             CancelCommand = new RelayCommand<Window>(Cancel);
-            DataRepository = new LogRepository();
+            DataRepository = Factory.GetLogEntryRepository(ConnectionStrategy);
         }
         private void Save(Window windowToClose)
         {

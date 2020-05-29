@@ -10,6 +10,7 @@
         <viewModels:AddLogEntryViewModel />
     </Window.DataContext>
     <StackPanel Margin="10">
+        <ComboBox SelectedItem="{Binding ConnectionStrategy}" ItemsSource="{Binding Stratgies}" />
         <Label Content="Pod Name"/>
         <TextBox Text="{Binding PoD}" MaxLength="255" />
         <Label Content="Hostname"/>

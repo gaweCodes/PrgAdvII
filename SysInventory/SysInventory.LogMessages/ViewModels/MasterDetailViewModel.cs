@@ -12,6 +12,7 @@ namespace SysInventory.LogMessages.ViewModels
     internal abstract class MasterDetailViewModel<T, TCollection> : BaseViewModel<T> where T : IIdentifiable
     {
         private T _selectedItem;
+        protected string Strategy;
         public event PropertyChangedEventHandler PropertyChanged;
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
@@ -60,10 +61,11 @@ namespace SysInventory.LogMessages.ViewModels
             if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) MessageBox.Show($"found {DataRepository.Count()} entries");
             else
             {
-                var count = DataRepository.Count(WhereCriteria, ParseSearchValues());
+                var count = Strategy == "AdoNet"
+                    ? DataRepository.Count(WhereCriteria, ParseSearchValues())
+                    : DataRepository.Count(null);
                 if (count > -1) MessageBox.Show($"found {count} entries");
             }
         }
-        protected abstract void SearchItems();
     }
 }

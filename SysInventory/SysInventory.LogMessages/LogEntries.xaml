@@ -44,6 +44,7 @@
         <TextBlock Text="Connectionstring" Grid.Row="0" Grid.Column="0"  />
         <TextBox Text="{Binding ConnectionString}" Grid.Row="1" Grid.Column="0" />
         <Button Content="Load" Command="{Binding LoadFilteredItemsCommand}" Grid.Column="2" Grid.Row="1" />
+        <ComboBox Grid.Column="4" Grid.Row="1" SelectedItem="{Binding ConnectionStrategy}" ItemsSource="{Binding Stratgies}" />
         <DataGrid SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding ShowingItems}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserResizeRows="True" CanUserSortColumns="True" IsReadOnly="true" />
         <Button Content="Add" Command="{Binding CreateItemCommand}" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" />
         <Button Content="Confirm" Command="{Binding SaveCurrentItemCommand}" Grid.Column="4" Grid.Row="5"/>
