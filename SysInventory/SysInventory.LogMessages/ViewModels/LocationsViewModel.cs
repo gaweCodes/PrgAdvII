@@ -71,7 +71,7 @@ namespace SysInventory.LogMessages.ViewModels
             {
                 var foundEntries = DataRepository.GetAll(WhereCriteria, ParseSearchValues());
                 var messageText = string.Empty;
-                foundEntries.ForEach(x => messageText += x + Environment.NewLine);
+                foundEntries.ToList().ForEach(x => messageText += x + Environment.NewLine);
                 MessageBox.Show(messageText);
             }
         }

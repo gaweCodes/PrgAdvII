@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows;
 using SysInventory.LogMessages.Models;
 
@@ -12,19 +13,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
         private static readonly string _orderByBase = "ORDER BY Location.Name";
         public override string TableName { get; } = "Location";
         protected override string SqlIdField { get; } = "LocationId";
-        protected override string SelectBase { get; } = "select LocationId, Location.Name, PoD.Name, PodId, ParentId from Location INNER JOIN PoD on (PoDFk = PodId)";
-        public override Location GetSingle<TKey>(TKey pkValue)
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"{SelectBase} WHERE LocationId = '{pkValue}'";
-                    using (var reader = cmd.ExecuteReader()) return reader.Read() ? BuildLocation(reader) : null;
-                }
-            }
-        }
+        protected virtual string SelectBase { get; } = "select LocationId, Location.Name, PoD.Name, PodId, ParentId from Location INNER JOIN PoD on (PoDFk = PodId)";
         public override void Add(Location entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -41,24 +30,43 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 }
             }
         }
-        public override void Update(Location entity)
+        public override long Count(string whereCondition, Dictionary<string, object> parameterValues)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = entity.ParentId.HasValue
-                        ? $"UPDATE {TableName} SET Name = @Name, Parentid = @ParentId, PodFk = @PoDId"
-                        : $"UPDATE {TableName} SET Name = @Name, PodFk = @PoDId";
-                    cmd.CommandText += $" WHERE LocationId = '{entity.Id}'";
-                    AddParameters(cmd, entity);
-                    var result = cmd.ExecuteNonQuery();
-                    if (result == -1) MessageBox.Show("The given pod doens't exist");
+                    cmd.CommandText = $"SELECT count(*) FROM {TableName} WHERE {whereCondition}";
+                    foreach (var keyValuePair in parameterValues) cmd.Parameters.AddWithValue(keyValuePair.Key, keyValuePair.Value);
+                    long numberOfEntries;
+                    try
+                    {
+                        long.TryParse(cmd.ExecuteScalar().ToString(), out numberOfEntries);
+                    }
+                    catch (Exception ex)
+                    {
+                        numberOfEntries = -1;
+                        MessageBox.Show(ex.Message);
+                    }
+                    return numberOfEntries;
                 }
             }
         }
-        public override List<Location> GetAll(string whereCondition, Dictionary<string, object> parameterValues)
+        public override IQueryable<Location> GetAll()
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"{SelectBase} {_orderByBase}";
+                    using (var reader = cmd.ExecuteReader()) PopulateLoadedObjectList(reader);
+                }
+            }
+            return LoadedObjects.AsQueryable();
+        }
+        public override IQueryable<Location> GetAll(string whereCondition, Dictionary<string, object> parameterValues)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -78,45 +86,38 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
-                        return new List<Location>();
+                        return new List<Location>().AsQueryable();
                     }
                 }
             }
-            return LoadedObjects;
+            return LoadedObjects.AsQueryable();
         }
-        public override List<Location> GetAll()
+        public override Location GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"{SelectBase} {_orderByBase}";
-                    using (var reader = cmd.ExecuteReader()) PopulateLoadedObjectList(reader);
+                    cmd.CommandText = $"{SelectBase} WHERE LocationId = '{pkValue}'";
+                    using (var reader = cmd.ExecuteReader()) return reader.Read() ? BuildLocation(reader) : null;
                 }
             }
-            return LoadedObjects;
         }
-        public override long Count(string whereCondition, Dictionary<string, object> parameterValues)
+        public override void Update(Location entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT count(*) FROM {TableName} WHERE {whereCondition}";
-                    foreach (var keyValuePair in parameterValues) cmd.Parameters.AddWithValue(keyValuePair.Key, keyValuePair.Value);
-                    long numberOfEntries;
-                    try
-                    {
-                        long.TryParse(cmd.ExecuteScalar().ToString(), out numberOfEntries);
-                    }
-                    catch(Exception ex)
-                    {
-                        numberOfEntries = -1;
-                        MessageBox.Show(ex.Message);
-                    }
-                    return numberOfEntries;
+                    cmd.CommandText = entity.ParentId.HasValue
+                        ? $"UPDATE {TableName} SET Name = @Name, Parentid = @ParentId, PodFk = @PoDId"
+                        : $"UPDATE {TableName} SET Name = @Name, PodFk = @PoDId";
+                    cmd.CommandText += $" WHERE LocationId = '{entity.Id}'";
+                    AddParameters(cmd, entity);
+                    var result = cmd.ExecuteNonQuery();
+                    if (result == -1) MessageBox.Show("The given pod doens't exist");
                 }
             }
         }

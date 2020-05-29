@@ -48,7 +48,7 @@ namespace SysInventory.LogMessages.ViewModels
             DeleteItemCommand = new RelayCommand(DeleteLogEntry, IsItemSelected);
             CreateItemCommand = new RelayCommand(OpenAddLogEntryDialog, CanConnectToDatabase);
             FindDuplicateLogEntriesCommand = new RelayCommand(LoadDuplicateLogEntries, CanConnectToDatabase);
-            LoadAllItemsCommand = new RelayCommand(LoadAllLogEntries, CanConnectToDatabase);
+            LoadAllItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
             ShowInfoMessageCommand = new RelayCommand(ShowInfoMessage);
             CountItemsCommand = new RelayCommand(CountItems, CanConnectToDatabase);
             LoadFilteredItemsCommand = new RelayCommand(SearchItems, CanConnectToDatabase);
@@ -60,7 +60,7 @@ namespace SysInventory.LogMessages.ViewModels
             try
             {
                 UpdateSettings();
-                var foundLogEntries = DataRepository.GetAll(string.Empty, new Dictionary<string, object>());
+                var foundLogEntries = DataRepository.GetAll();
                 PopulateShowingItemsList(foundLogEntries);
             }
             catch (Exception ex)
@@ -79,19 +79,6 @@ namespace SysInventory.LogMessages.ViewModels
             catch (Exception e)
             {
                 MessageBox.Show("An error occured while confirming the log entry: " + e.Message);
-            }
-        }
-        private void LoadAllLogEntries()
-        {
-            try
-            {
-                UpdateSettings();
-                var foundLogEntries = DataRepository.GetAll();
-                PopulateShowingItemsList(foundLogEntries);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occured while loading the log entries: " + ex.Message);
             }
         }
         private void OpenAddLogEntryDialog()
