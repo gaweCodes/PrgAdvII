@@ -1,4 +1,5 @@
-﻿using SysInventory.LogMessages.DataAccess;
+﻿using System;
+using SysInventory.LogMessages.DataAccess;
 using SysInventory.LogMessages.DataAccess.AdoNet;
 using SysInventory.LogMessages.Models;
 
@@ -8,19 +9,31 @@ namespace SysInventory.LogMessages
     {
         public IRepositoryBase<ILogEntry> GetLogEntryRepository(string connectionStrategy)
         {
-            if (connectionStrategy == "AdoNet")
+            switch (connectionStrategy)
             {
-                return new LogRepository();
+                case "AdoNet":
+                    return new LogRepository();
+                case "LINQ":
+                    return new DataAccess.LINQ.LogRepository();
+                case "EF":
+                    return new DataAccess.Ef.LogRepository();
+                default:
+                    throw new NotSupportedException("This strategy is not supported: " + connectionStrategy);
             }
-            return new DataAccess.LINQ.LogRepository();
         }
         public IRepositoryBase<ILocation> GetLocationRepository(string connectionStrategy)
         {
-            if (connectionStrategy == "AdoNet")
+            switch (connectionStrategy)
             {
-                return new LocationRepository();
+                case "AdoNet":
+                    return new LocationRepository();
+                case "LINQ":
+                    return new DataAccess.LINQ.LocationRepository();
+                case "EF":
+                    return new DataAccess.Ef.LocationRepository();
+                default:
+                    throw new NotSupportedException("This strategy is not supported: " + connectionStrategy);
             }
-            return new DataAccess.LINQ.LocationRepository();
         }
     }
 }

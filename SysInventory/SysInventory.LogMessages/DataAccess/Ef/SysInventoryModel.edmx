@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SysInventoryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocationId" />
+          </Key>
+          <Property Name="LocationId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="PodFk" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ParentId" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Message" Type="varchar(max)" Nullable="false" />
+          <Property Name="DeviceFk" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Severity" Type="int" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="Confirmed" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="v_logentries">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="pod" />
+            <PropertyRef Name="location" />
+            <PropertyRef Name="Hostname" />
+            <PropertyRef Name="Severity" />
+            <PropertyRef Name="timestamp" />
+            <PropertyRef Name="Message" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="pod" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="location" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Hostname" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Severity" Type="int" Nullable="false" />
+          <Property Name="timestamp" Type="datetime" Nullable="false" />
+          <Property Name="Message" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="Hierarchie">
+          <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
+          <End Role="Location1" Type="Self.Location" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="LocationId" />
+            </Principal>
+            <Dependent Role="Location1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="LogClear" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="LogMessageAdd" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="podName" Type="nvarchar" Mode="In" />
+          <Parameter Name="hostname" Type="nvarchar" Mode="In" />
+          <Parameter Name="lvl" Type="int" Mode="In" />
+          <Parameter Name="msg" Type="text" Mode="In" />
+        </Function>
+        <EntityContainer Name="SysInventoryModelStoreContainer">
+          <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="v_logentries" EntityType="Self.v_logentries" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_logentries].[id] AS [id], 
+    [v_logentries].[pod] AS [pod], 
+    [v_logentries].[location] AS [location], 
+    [v_logentries].[Hostname] AS [Hostname], 
+    [v_logentries].[Severity] AS [Severity], 
+    [v_logentries].[timestamp] AS [timestamp], 
+    [v_logentries].[Message] AS [Message]
+    FROM [dbo].[v_logentries] AS [v_logentries]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="Hierarchie" Association="Self.Hierarchie">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="Location1" EntitySet="Location" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SysInventoryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="LocationEf">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PoDId" Type="Guid" Nullable="false" />
+          <Property Name="ParentId" Type="Guid" />
+          <NavigationProperty Name="Location1" Relationship="Self.Hierarchie" FromRole="Location" ToRole="Location1" />
+          <NavigationProperty Name="Location2" Relationship="Self.Hierarchie" FromRole="Location1" ToRole="Location" />
+        </EntityType>
+        <EntityType Name="v_logentries">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="PoD" />
+            <PropertyRef Name="Location" />
+            <PropertyRef Name="Hostname" />
+            <PropertyRef Name="Severity" />
+            <PropertyRef Name="Timestamp" />
+            <PropertyRef Name="Message" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="PoD" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Hostname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Severity" Type="Int32" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <Association Name="Hierarchie">
+          <End Role="Location" Type="SysInventoryModel.LocationEf" Multiplicity="0..1" />
+          <End Role="Location1" Type="SysInventoryModel.LocationEf" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Location1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SysInventoryEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="LocationEfs" EntityType="SysInventoryModel.LocationEf" />
+          <EntitySet Name="v_logentries" EntityType="Self.v_logentries" />
+          <AssociationSet Name="Hierarchie" Association="Self.Hierarchie">
+            <End Role="Location" EntitySet="LocationEfs" />
+            <End Role="Location1" EntitySet="LocationEfs" />
+          </AssociationSet>
+          <FunctionImport Name="LogClear">
+          <Parameter Name="id" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="LogMessageAdd">
+            <Parameter Name="podName" Mode="In" Type="String" />
+            <Parameter Name="hostname" Mode="In" Type="String" />
+            <Parameter Name="lvl" Mode="In" Type="Int32" />
+            <Parameter Name="msg" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="LogEfs" EntityType="SysInventoryModel.LogEf" />
+        </EntityContainer>
+        <EntityType Name="LogEf">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="Guid" Nullable="false" />
+          <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceFk" Type="Guid" Nullable="false" />
+          <Property Name="Severity" Type="Int32" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Confirmed" Type="Boolean" Nullable="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SysInventoryModelStoreContainer" CdmEntityContainer="SysInventoryEntities">
+          <EntitySetMapping Name="LocationEfs">
+            <EntityTypeMapping TypeName="SysInventoryModel.LocationEf">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="Id" ColumnName="LocationId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PoDId" ColumnName="PodFk" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_logentries">
+            <EntityTypeMapping TypeName="SysInventoryModel.v_logentries">
+              <MappingFragment StoreEntitySet="v_logentries">
+                <ScalarProperty Name="Id" ColumnName="id" />
+                <ScalarProperty Name="PoD" ColumnName="pod" />
+                <ScalarProperty Name="Location" ColumnName="location" />
+                <ScalarProperty Name="Hostname" ColumnName="Hostname" />
+                <ScalarProperty Name="Severity" ColumnName="Severity" />
+                <ScalarProperty Name="Timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="LogClear" FunctionName="SysInventoryModel.Store.LogClear" />
+          <FunctionImportMapping FunctionImportName="LogMessageAdd" FunctionName="SysInventoryModel.Store.LogMessageAdd" />
+          <EntitySetMapping Name="LogEfs">
+            <EntityTypeMapping TypeName="SysInventoryModel.LogEf">
+              <MappingFragment StoreEntitySet="Log">
+                <ScalarProperty Name="Confirmed" ColumnName="Confirmed" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Severity" ColumnName="Severity" />
+                <ScalarProperty Name="DeviceFk" ColumnName="DeviceFk" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="LogId" ColumnName="LogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

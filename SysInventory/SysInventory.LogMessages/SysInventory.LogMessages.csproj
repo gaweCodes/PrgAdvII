@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,6 +14,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,9 +35,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +68,33 @@
     <Compile Include="DataAccess\AdoNet\AdoNetBaseRepository.cs" />
     <Compile Include="DataAccess\AdoNet\LocationRepository.cs" />
     <Compile Include="DataAccess\AdoNet\LogRepository.cs" />
+    <Compile Include="DataAccess\Ef\EfBaseRepository.cs" />
+    <Compile Include="DataAccess\Ef\LocationEf.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\LogEf.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\LocationRepository.cs" />
+    <Compile Include="DataAccess\Ef\LogRepository.cs" />
+    <Compile Include="DataAccess\Ef\SysInventoryModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SysInventoryModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\SysInventoryModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\SysInventoryModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SysInventoryModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\v_logentries.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataAccess\IRepositoryBase.cs" />
     <Compile Include="DataAccess\LINQ\LinqBaseRepository.cs" />
     <Compile Include="DataAccess\LINQ\LocationRepository.cs" />
@@ -117,6 +156,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="app.config" />
+    <EntityDeploy Include="DataAccess\Ef\SysInventoryModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SysInventoryModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="DataAccess\Ef\SysInventoryModel.edmx.diagram">
+      <DependentUpon>SysInventoryModel.edmx</DependentUpon>
+    </None>
     <None Include="DataAccess\LINQ\SysInventoryLinqSqlContext.dbml.layout">
       <DependentUpon>SysInventoryLinqSqlContext.dbml</DependentUpon>
     </None>
@@ -129,6 +175,7 @@
       <LastGenOutput>SysInventoryLinqSqlContext.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -142,6 +189,28 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="DataAccess\Ef\SysInventoryModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SysInventoryModel.edmx</DependentUpon>
+      <LastGenOutput>SysInventoryModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DataAccess\Ef\SysInventoryModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SysInventoryModel.edmx</DependentUpon>
+      <LastGenOutput>SysInventoryModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
 </Project>

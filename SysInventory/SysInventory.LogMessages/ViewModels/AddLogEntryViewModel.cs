@@ -59,6 +59,7 @@ namespace SysInventory.LogMessages.ViewModels
         public RelayCommand<Window> CancelCommand { get; }
         public AddLogEntryViewModel()
         {
+            ConnectionStrategy = "AdoNet";
             SaveCurrentItemCommand = new RelayCommand<Window>(Save, CanSave);
             CancelCommand = new RelayCommand<Window>(Cancel);
             DataRepository = Factory.GetLogEntryRepository(ConnectionStrategy);

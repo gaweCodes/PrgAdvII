@@ -8,7 +8,7 @@ namespace SysInventory.LogMessages.ViewModels
     {
         protected IRepositoryBase<T> DataRepository { get; set; }
         public IRelayCommand SaveCurrentItemCommand { get; set; }
-        public List<string> Stratgies { get; } = new List<string> { "AdoNet", "LINQ" };
+        public List<string> Stratgies { get; } = new List<string> { "AdoNet", "LINQ", "EF" };
         protected readonly RepositoryFactory Factory = new RepositoryFactory();
     }
 }

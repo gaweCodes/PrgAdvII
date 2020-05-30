@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using SysInventory.LogMessages.Properties;
 
-namespace SysInventory.LogMessages.DataAccess.LINQ
+namespace SysInventory.LogMessages.DataAccess.Ef
 {
-    internal abstract class LinqBaseRepository<T> : IRepositoryBase<T> where T : class
+    internal abstract class EfBaseRepository<T> : IRepositoryBase<T> where T : class
     {
-        protected string ConnectionString { get; }
-        protected SysInventoryLinqSqlContextDataContext Context;
-        protected LinqBaseRepository() => ConnectionString = Settings.Default.ConnectionString;
+        protected SysInventoryEntities Context;
         public abstract void Add(T entity);
         public abstract long Count();
         public long Count(string whereCondition, Dictionary<string, object> parameterValues) =>
