@@ -5,19 +5,24 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.DataAccess.LINQ
 {
-    internal class LogRepository : LinqBaseRepository<LogEntry>
+    internal class LogRepository : LinqBaseRepository<ILogEntry>
     {
-        public override void Add(LogEntry entity)
+        public override void Add(ILogEntry entity)
         {
             using (Context = new SysInventoryLinqSqlContextDataContext())
                 Context.LogMessageAdd(entity.PoD, entity.Hostname, entity.Severity, entity.Message);
         }
-        public override long Count(Expression<Func<LogEntry, bool>> whereExpression)
+        public override long Count()
         {
             using (Context = new SysInventoryLinqSqlContextDataContext(ConnectionString))
-                return Context.GetTable<LogEntry>().LongCount(x => x.Message != string.Empty);
+                return Context.GetTable<LogEntry>().LongCount();
         }
-        public override void Delete(LogEntry entity)
+        public override long Count(Expression<Func<ILogEntry, bool>> whereExpression)
+        {
+            using (Context = new SysInventoryLinqSqlContextDataContext(ConnectionString))
+                return whereExpression != null ? Context.GetTable<LogEntry>().LongCount(whereExpression) : Context.GetTable<LogEntry>().LongCount();
+        }
+        public override void Delete(ILogEntry entity)
         {
             using (Context = new SysInventoryLinqSqlContextDataContext())
             {
@@ -25,12 +30,18 @@ namespace SysInventory.LogMessages.DataAccess.LINQ
                 Context.SubmitChanges();
             }
         }
-        public override IQueryable<LogEntry> GetAll(Expression<Func<LogEntry, bool>> whereExpression)
+
+        public override IQueryable<ILogEntry> GetAll()
         {
             Context = new SysInventoryLinqSqlContextDataContext(ConnectionString);
-            return Context.GetTable<LogEntry>().Where(x => x.Severity > 4);
+            return Context.GetTable<LogEntry>();
         }
-        public override LogEntry GetSingle<TKey>(TKey pkValue)
+        public override IQueryable<ILogEntry> GetAll(Expression<Func<ILogEntry, bool>> whereExpression)
+        {
+            Context = new SysInventoryLinqSqlContextDataContext(ConnectionString);
+            return whereExpression != null ? Context.GetTable<LogEntry>().Where(whereExpression) : Context.GetTable<LogEntry>();
+        }
+        public override ILogEntry GetSingle<TKey>(TKey pkValue)
         {
             using (Context = new SysInventoryLinqSqlContextDataContext(ConnectionString))
             {
@@ -38,7 +49,7 @@ namespace SysInventory.LogMessages.DataAccess.LINQ
                 return Context.GetTable<LogEntry>().First(x => x.Id == id);
             }
         }
-        public override void Update(LogEntry entity)
+        public override void Update(ILogEntry entity)
         {
             using (Context = new SysInventoryLinqSqlContextDataContext())
                 Context.LogClear(entity.Id);

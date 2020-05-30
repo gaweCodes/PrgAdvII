@@ -9,7 +9,7 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class LocationsViewModel : MasterDetailViewModel<Location, LocationTreeViewitem>, INotifyPropertyChanged
+    internal class LocationsViewModel : MasterDetailViewModel<ILocation, LocationTreeViewitem>, INotifyPropertyChanged
     {
         private string _connectionStrategy;
         public string ConnectionStrategy

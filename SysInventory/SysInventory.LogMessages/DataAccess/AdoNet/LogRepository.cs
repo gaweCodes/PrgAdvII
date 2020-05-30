@@ -8,12 +8,12 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.DataAccess.AdoNet
 {
-    internal class LogRepository : AdoNetBaseRepository<LogEntry>
+    internal class LogRepository : AdoNetBaseRepository<ILogEntry>
     {
         public override string TableName { get; protected set; } = "v_LogEntries";
         protected override string SqlIdField { get; set; } = "id";
         protected virtual string SelectBase { get; } = "SELECT * FROM v_logEntries ";
-        public override void Add(LogEntry entity)
+        public override void Add(ILogEntry entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -52,13 +52,13 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 }
             }
         }
-        public override void Delete(LogEntry entity)
+        public override void Delete(ILogEntry entity)
         {
             TableName = "Log";
             SqlIdField = "LogId";
             base.Delete(entity);
         }
-        public override IQueryable<LogEntry> GetAll()
+        public override IQueryable<ILogEntry> GetAll()
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -71,7 +71,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             }
             return LoadedObjects.AsQueryable();
         }
-        public override IQueryable<LogEntry> GetAll(string whereCondition, Dictionary<string, object> parameterValues)
+        public override IQueryable<ILogEntry> GetAll(string whereCondition, Dictionary<string, object> parameterValues)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -92,7 +92,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             }
             return LoadedObjects.AsQueryable();
         }
-        public override LogEntry GetSingle<TKey>(TKey pkValue)
+        public override ILogEntry GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -104,7 +104,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 }
             }
         }
-        public override void Update(LogEntry entity)
+        public override void Update(ILogEntry entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -118,7 +118,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 }
             }
         }
-        private static void AddParameters(SqlCommand cmd, LogEntry entity)
+        private static void AddParameters(SqlCommand cmd, ILogEntry entity)
         {
             cmd.Parameters.AddWithValue("@podName", entity.PoD);
             cmd.Parameters.AddWithValue("@hostname", entity.Hostname);

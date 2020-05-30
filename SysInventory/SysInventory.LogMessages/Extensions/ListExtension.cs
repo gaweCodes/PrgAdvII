@@ -9,9 +9,9 @@ namespace SysInventory.LogMessages.Extensions
     {
         public static IEnumerable<LocationTreeViewitem> GenerateTree<TK>
         (
-            this IEnumerable<Location> collection,
-            Func<Location, TK> idSelector,
-            Func<Location, TK> parentIdSelector,
+            this IEnumerable<ILocation> collection,
+            Func<ILocation, TK> idSelector,
+            Func<ILocation, TK> parentIdSelector,
             TK rootId = default)
         {
             var list = collection.ToList();

@@ -4,7 +4,7 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class AddLogEntryViewModel : BaseViewModel<LogEntry>
+    internal class AddLogEntryViewModel : BaseViewModel<ILogEntry>
     {
         private string _connectionStrategy;
         public string ConnectionStrategy

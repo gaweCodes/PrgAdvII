@@ -12,11 +12,7 @@ namespace SysInventory.LogMessages.DataAccess.LINQ
         protected SysInventoryLinqSqlContextDataContext Context;
         protected LinqBaseRepository() => ConnectionString = Settings.Default.ConnectionString;
         public abstract void Add(T entity);
-        public long Count()
-        {
-            using (Context = new SysInventoryLinqSqlContextDataContext(ConnectionString))
-                return Context.GetTable<T>().LongCount();
-        }
+        public abstract long Count();
         public long Count(string whereCondition, Dictionary<string, object> parameterValues) =>
             throw new NotSupportedException("This method is not supported for Linq");
         public abstract long Count(Expression<Func<T, bool>> whereExpression);
@@ -28,11 +24,7 @@ namespace SysInventory.LogMessages.DataAccess.LINQ
                 Context.SubmitChanges();
             }
         }
-        public IQueryable<T> GetAll()
-        {
-            Context = new SysInventoryLinqSqlContextDataContext(ConnectionString);
-            return Context.GetTable<T>();
-        }
+        public abstract IQueryable<T> GetAll();
         public IQueryable<T> GetAll(string whereCondition, Dictionary<string, object> parameterValues) =>
             throw new NotSupportedException("This method is not supported for Linq");
         public abstract IQueryable<T> GetAll(Expression<Func<T, bool>> whereExpression);

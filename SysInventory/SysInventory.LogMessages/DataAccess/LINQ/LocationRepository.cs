@@ -5,37 +5,48 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.DataAccess.LINQ
 {
-    internal class LocationRepository : LinqBaseRepository<Location>
+    internal class LocationRepository : LinqBaseRepository<ILocation>
     {
-        public override void Add(Location entity)
+        public override void Add(ILocation entity)
         {
             using (Context = new SysInventoryLinqSqlContextDataContext())
             {
                 entity.Id = Guid.NewGuid();
-                Context.GetTable<Location>().InsertOnSubmit(entity);
+                Context.GetTable<Location>().InsertOnSubmit((Location)entity);
                 Context.SubmitChanges();
             }
         }
-        public override long Count(Expression<Func<Location, bool>> whereExpression)
+        public override long Count()
         {
             using (Context = new SysInventoryLinqSqlContextDataContext(ConnectionString))
-                return Context.GetTable<Location>().LongCount(x => x.Name != string.Empty);
+                return Context.GetTable<Location>().LongCount();
         }
-        public override void Delete(Location entity)
+        public override long Count(Expression<Func<ILocation, bool>> whereExpression)
+        {
+            using (Context = new SysInventoryLinqSqlContextDataContext(ConnectionString))
+                return whereExpression != null
+                    ? Context.GetTable<Location>().LongCount(whereExpression)
+                    : Context.GetTable<Location>().LongCount();
+        }
+        public override void Delete(ILocation entity)
         {
             using (Context = new SysInventoryLinqSqlContextDataContext())
             {
-                Context.GetTable<Location>().Attach(entity);
-                Context.GetTable<Location>().DeleteOnSubmit(entity);
+                Context.GetTable<Location>().DeleteOnSubmit(Context.GetTable<Location>().First(x => x.Id == entity.Id));
                 Context.SubmitChanges();
             }
         }
-        public override IQueryable<Location> GetAll(Expression<Func<Location, bool>> whereExpression)
+        public override IQueryable<ILocation> GetAll()
         {
             Context = new SysInventoryLinqSqlContextDataContext(ConnectionString);
-            return Context.GetTable<Location>().Where(x => x.ParentId == null);
+            return Context.GetTable<Location>();
         }
-        public override Location GetSingle<TKey>(TKey pkValue)
+        public override IQueryable<ILocation> GetAll(Expression<Func<ILocation, bool>> whereExpression)
+        {
+            Context = new SysInventoryLinqSqlContextDataContext(ConnectionString);
+            return whereExpression!=null ? Context.GetTable<Location>().Where(whereExpression) : Context.GetTable<Location>();
+        }
+        public override ILocation GetSingle<TKey>(TKey pkValue)
         {
             using (Context = new SysInventoryLinqSqlContextDataContext(ConnectionString))
             {
@@ -43,7 +54,7 @@ namespace SysInventory.LogMessages.DataAccess.LINQ
                 return Context.GetTable<Location>().First(x => x.Id == id);
             }
         }
-        public override void Update(Location entity)
+        public override void Update(ILocation entity)
         {
             using (Context = new SysInventoryLinqSqlContextDataContext())
             {

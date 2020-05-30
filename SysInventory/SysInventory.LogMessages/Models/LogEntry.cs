@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Data.Linq.Mapping;
-using DuplicateCheckerLib;
 
 namespace SysInventory.LogMessages.Models
 {
     [Table(Name = "v_LogEntries")]
-    public sealed class LogEntry : IEntity, IEquatable<LogEntry>, IIdentifiable
+    public sealed class LogEntry : IEquatable<LogEntry>, ILogEntry
     {
         [Column(Name = "Id", IsPrimaryKey = true)]
         public Guid Id { get; set; }

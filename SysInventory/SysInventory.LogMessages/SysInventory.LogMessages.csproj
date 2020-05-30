@@ -71,6 +71,8 @@
       <DependentUpon>Locations.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\IIdentifiable.cs" />
+    <Compile Include="Models\ILocation.cs" />
+    <Compile Include="Models\ILogEntry.cs" />
     <Compile Include="Models\LocationTreeViewItem.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\LogEntry.cs" />

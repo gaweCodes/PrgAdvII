@@ -9,7 +9,7 @@ using SysInventory.LogMessages.Properties;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class LogEntriesViewModel : MasterDetailViewModel<LogEntry, LogEntry>
+    internal class LogEntriesViewModel : MasterDetailViewModel<ILogEntry, ILogEntry>
     {
         public IRelayCommand FindDuplicateLogEntriesCommand { get; }
         public RelayCommand ShowInfoMessageCommand { get; }
@@ -40,7 +40,7 @@ namespace SysInventory.LogMessages.ViewModels
             ConnectionString = Settings.Default.ConnectionString;
             ConnectionStrategy = "AdoNet";
             DataRepository = Factory.GetLogEntryRepository(ConnectionStrategy);
-            ShowingItems = new ObservableCollection<LogEntry>();
+            ShowingItems = new ObservableCollection<ILogEntry>();
             LoadFilteredItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
             SaveCurrentItemCommand = new RelayCommand(ConfirmLogEntry, IsItemSelected);
             LoadDetailsCommand = new RelayCommand(ShowLogEntryDetails, IsItemSelected);
@@ -92,7 +92,7 @@ namespace SysInventory.LogMessages.ViewModels
                 LoadUnconfirmedLogEntries();
             var duplicateChecker = new DuplicateChecker();
             var duplicates = duplicateChecker.FindDuplicates(ShowingItems);
-            var castedDuplicates = duplicates.Where(entity => entity is LogEntry).Cast<LogEntry>();
+            var castedDuplicates = duplicates.Where(entity => entity is ILogEntry).Cast<ILogEntry>();
             PopulateShowingItemsList(castedDuplicates);
         }
         private void UpdateSettings()

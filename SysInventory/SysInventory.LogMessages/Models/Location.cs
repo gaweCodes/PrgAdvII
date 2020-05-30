@@ -4,7 +4,7 @@ using System.Data.Linq.Mapping;
 namespace SysInventory.LogMessages.Models
 {
     [Table(Name = "Location")]
-    public sealed class Location : IIdentifiable
+    public sealed class Location : ILocation
     {
         [Column(Name = "LocationId", IsPrimaryKey = true)]
         public Guid Id { get; set; }

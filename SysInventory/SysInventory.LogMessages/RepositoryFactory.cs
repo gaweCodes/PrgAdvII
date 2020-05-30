@@ -6,7 +6,7 @@ namespace SysInventory.LogMessages
 {
     internal class RepositoryFactory
     {
-        public IRepositoryBase<LogEntry> GetLogEntryRepository(string connectionStrategy)
+        public IRepositoryBase<ILogEntry> GetLogEntryRepository(string connectionStrategy)
         {
             if (connectionStrategy == "AdoNet")
             {
@@ -14,7 +14,7 @@ namespace SysInventory.LogMessages
             }
             return new DataAccess.LINQ.LogRepository();
         }
-        public IRepositoryBase<Location> GetLocationRepository(string connectionStrategy)
+        public IRepositoryBase<ILocation> GetLocationRepository(string connectionStrategy)
         {
             if (connectionStrategy == "AdoNet")
             {

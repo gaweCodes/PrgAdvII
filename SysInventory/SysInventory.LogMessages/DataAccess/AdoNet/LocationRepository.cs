@@ -8,13 +8,13 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.DataAccess.AdoNet
 {
-    internal class LocationRepository : AdoNetBaseRepository<Location>
+    internal class LocationRepository : AdoNetBaseRepository<ILocation>
     {
         private static readonly string _orderByBase = "ORDER BY Name";
         public override string TableName { get; protected set; } = "Location";
         protected override string SqlIdField { get; set; } = "LocationId";
         protected virtual string SelectBase { get; } = "select LocationId, Name, PodFk, ParentId from Location";
-        public override void Add(Location entity)
+        public override void Add(ILocation entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -53,7 +53,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 }
             }
         }
-        public override IQueryable<Location> GetAll()
+        public override IQueryable<ILocation> GetAll()
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -66,7 +66,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             }
             return LoadedObjects.AsQueryable();
         }
-        public override IQueryable<Location> GetAll(string whereCondition, Dictionary<string, object> parameterValues)
+        public override IQueryable<ILocation> GetAll(string whereCondition, Dictionary<string, object> parameterValues)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -92,7 +92,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             }
             return LoadedObjects.AsQueryable();
         }
-        public override Location GetSingle<TKey>(TKey pkValue)
+        public override ILocation GetSingle<TKey>(TKey pkValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -104,7 +104,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
                 }
             }
         }
-        public override void Update(Location entity)
+        public override void Update(ILocation entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -137,7 +137,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             if (!reader.IsDBNull(3)) location.ParentId = reader.GetGuid(3);
             return location;
         }
-        private static void AddParameters(SqlCommand cmd, Location entity)
+        private static void AddParameters(SqlCommand cmd, ILocation entity)
         {
             cmd.Parameters.AddWithValue("Name", entity.Name);
             cmd.Parameters.AddWithValue("PoDId", entity.PoDId);
