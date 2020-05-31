@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:SysInventory.LogMessages.ViewModels"
         mc:Ignorable="d"
-        Title="Add Dialog" Height="450" Width="500" Name="AddDialogWindow">
+        Title="Add Dialog" Height="475" Width="500" Name="AddDialogWindow">
     <Window.DataContext>
         <viewModels:AddLogEntryViewModel />
     </Window.DataContext>

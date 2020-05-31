@@ -4,7 +4,7 @@ using System.Data.Linq.Mapping;
 namespace SysInventory.LogMessages.Models
 {
     [Table(Name = "v_LogEntries")]
-    public sealed class LogEntry : IEquatable<LogEntry>, ILogEntry
+    public sealed class LogEntry : ILogEntry
     {
         [Column(Name = "Id", IsPrimaryKey = true)]
         public Guid Id { get; set; }

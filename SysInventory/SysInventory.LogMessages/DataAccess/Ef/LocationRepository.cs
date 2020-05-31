@@ -33,19 +33,22 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         {
             using (Context = new SysInventoryEntities())
             {
-                Context.LocationEfs.Remove(Context.LocationEfs.Find(entity.Id));
+                var found = Context.LocationEfs.Find(entity.Id);
+                if(found==null) return;
+                Context.LocationEfs.Remove(found);
                 Context.SaveChanges();
             }
         }
         public override IQueryable<ILocation> GetAll()
         {
             Context = new SysInventoryEntities();
-            return Context.LocationEfs;
+            return Context.LocationEfs.OrderBy(x => x.Name);
         }
         public override IQueryable<ILocation> GetAll(Expression<Func<ILocation, bool>> whereExpression)
         {
             Context = new SysInventoryEntities();
-            return whereExpression != null ? Context.LocationEfs.Where(whereExpression) : Context.LocationEfs;
+            var query = whereExpression != null ? Context.LocationEfs.Where(whereExpression) : Context.LocationEfs;
+            return query.OrderBy(x => x.Name);
         }
         public override ILocation GetSingle<TKey>(TKey pkValue)
         {
@@ -57,6 +60,7 @@ namespace SysInventory.LogMessages.DataAccess.Ef
             using (Context = new SysInventoryEntities())
             {
                 var found = Context.LocationEfs.Find(entity.Id);
+                if(found==null) return;
                 found.ParentId = entity.ParentId;
                 found.PoDId = entity.PoDId;
                 found.Name = entity.Name;

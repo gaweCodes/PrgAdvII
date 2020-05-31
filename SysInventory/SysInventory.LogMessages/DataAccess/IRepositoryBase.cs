@@ -65,5 +65,6 @@ namespace SysInventory.LogMessages.DataAccess
         /// </summary>
         /// <param name="entity">object to update</param>
         void Update(T entity);
+        void CleanUp();
     }
 }

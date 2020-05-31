@@ -23,5 +23,9 @@ namespace SysInventory.LogMessages.DataAccess.LINQ
         public abstract IQueryable<T> GetAll(Expression<Func<T, bool>> whereExpression);
         public abstract T GetSingle<TKey>(TKey pkValue);
         public abstract void Update(T entity);
+        public void CleanUp()
+        {
+            Context.Dispose();
+        }
     }
 }

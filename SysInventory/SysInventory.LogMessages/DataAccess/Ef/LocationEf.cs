@@ -30,5 +30,6 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LocationEf> Location1 { get; set; }
         public virtual LocationEf Location2 { get; set; }
+        public override string ToString() => Name;
     }
 }

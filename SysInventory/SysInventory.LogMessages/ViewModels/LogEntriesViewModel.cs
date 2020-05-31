@@ -88,8 +88,7 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void LoadDuplicateLogEntries()
         {
-            if(ShowingItems.Count == 0)
-                LoadUnconfirmedLogEntries();
+            if(ShowingItems.Count == 0) LoadUnconfirmedLogEntries();
             var duplicateChecker = new DuplicateChecker();
             var duplicates = duplicateChecker.FindDuplicates(ShowingItems);
             var castedDuplicates = duplicates.Where(entity => entity is ILogEntry).Cast<ILogEntry>();

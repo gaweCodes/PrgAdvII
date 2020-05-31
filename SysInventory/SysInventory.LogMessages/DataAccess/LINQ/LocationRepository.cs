@@ -39,12 +39,13 @@ namespace SysInventory.LogMessages.DataAccess.LINQ
         public override IQueryable<ILocation> GetAll()
         {
             Context = new SysInventoryLinqSqlContextDataContext(ConnectionString);
-            return Context.GetTable<Location>();
+            return Context.GetTable<Location>().OrderBy(x => x.Name);
         }
         public override IQueryable<ILocation> GetAll(Expression<Func<ILocation, bool>> whereExpression)
         {
             Context = new SysInventoryLinqSqlContextDataContext(ConnectionString);
-            return whereExpression!=null ? Context.GetTable<Location>().Where(whereExpression) : Context.GetTable<Location>();
+            var query = whereExpression!=null ? Context.GetTable<Location>().Where(whereExpression) : Context.GetTable<Location>();
+            return query.OrderBy(x => x.Name);
         }
         public override ILocation GetSingle<TKey>(TKey pkValue)
         {

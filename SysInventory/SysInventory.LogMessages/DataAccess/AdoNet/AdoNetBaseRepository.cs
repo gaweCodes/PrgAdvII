@@ -63,5 +63,6 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             throw new NotSupportedException("This method is not supported for AdoNet");
         public abstract T GetSingle<TKey>(TKey pkValue);
         public abstract void Update(T entity);
+        public void CleanUp() { }
     }
 }
