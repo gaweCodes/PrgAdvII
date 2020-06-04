@@ -12,14 +12,18 @@ namespace SysInventory.LogMessages.DataAccess.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class v_logentries
+    public partial class PhoneType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PhoneType()
+        {
+            this.PhoneNumbers = new HashSet<PhoneNumber>();
+        }
+    
         public System.Guid Id { get; set; }
-        public string PoD { get; set; }
-        public string Location { get; set; }
-        public string Hostname { get; set; }
-        public int Severity { get; set; }
-        public System.DateTime Timestamp { get; set; }
-        public string Message { get; set; }
+        public string Name { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
     }
 }

@@ -5,6 +5,59 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="SysInventoryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="AddressId" />
+          </Key>
+          <Property Name="AddressId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Street" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="HouseNo" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CityFk" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AddressType">
+          <Key>
+            <PropertyRef Name="AddressTypeId" />
+          </Key>
+          <Property Name="AddressTypeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="City">
+          <Key>
+            <PropertyRef Name="CityId" />
+          </Key>
+          <Property Name="CityId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ZipCode" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="City" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Country" Type="varchar" MaxLength="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ContactPerson">
+          <Key>
+            <PropertyRef Name="ContactPersonId" />
+          </Key>
+          <Property Name="ContactPersonId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Salutation" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Firstname" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Lastname" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Mail" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Role" Type="nvarchar" MaxLength="255" />
+          <Property Name="Department" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="AddressFk" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AddressTypeFk" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerNo" />
+          </Key>
+          <Property Name="CustomerNo" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Mail" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="InactivedAt" Type="datetime2" Precision="0" />
+          <Property Name="AddressFk" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AddressTypeFk" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="Location">
           <Key>
             <PropertyRef Name="LocationId" />
@@ -24,6 +77,22 @@
           <Property Name="Severity" Type="int" Nullable="false" />
           <Property Name="CreatedAt" Type="datetime" Nullable="false" />
           <Property Name="Confirmed" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PhoneNumber">
+          <Key>
+            <PropertyRef Name="PhoneNumberId" />
+          </Key>
+          <Property Name="PhoneNumberId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Number" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="PhoneTypeFk" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ContactPersonFk" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PhoneType">
+          <Key>
+            <PropertyRef Name="PhoneTypeId" />
+          </Key>
+          <Property Name="PhoneTypeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -45,6 +114,66 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
           <Property Name="timestamp" Type="datetime" Nullable="false" />
           <Property Name="Message" Type="varchar(max)" Nullable="false" />
         </EntityType>
+        <Association Name="Address_City">
+          <End Role="City" Type="Self.City" Multiplicity="1" />
+          <End Role="Address" Type="Self.Address" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="City">
+              <PropertyRef Name="CityId" />
+            </Principal>
+            <Dependent Role="Address">
+              <PropertyRef Name="CityFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ContactPerson_Address">
+          <End Role="Address" Type="Self.Address" Multiplicity="1" />
+          <End Role="ContactPerson" Type="Self.ContactPerson" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="AddressId" />
+            </Principal>
+            <Dependent Role="ContactPerson">
+              <PropertyRef Name="AddressFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ContactPerson_AddressType">
+          <End Role="AddressType" Type="Self.AddressType" Multiplicity="1" />
+          <End Role="ContactPerson" Type="Self.ContactPerson" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AddressType">
+              <PropertyRef Name="AddressTypeId" />
+            </Principal>
+            <Dependent Role="ContactPerson">
+              <PropertyRef Name="AddressTypeFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Customer_Address">
+          <End Role="Address" Type="Self.Address" Multiplicity="1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="AddressId" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="AddressFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Customer_AddressType">
+          <End Role="AddressType" Type="Self.AddressType" Multiplicity="1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AddressType">
+              <PropertyRef Name="AddressTypeId" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="AddressTypeFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="Hierarchie">
           <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
           <End Role="Location1" Type="Self.Location" Multiplicity="*" />
@@ -54,6 +183,30 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
             </Principal>
             <Dependent Role="Location1">
               <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PhoneNumber_ContactPerson">
+          <End Role="ContactPerson" Type="Self.ContactPerson" Multiplicity="1" />
+          <End Role="PhoneNumber" Type="Self.PhoneNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ContactPerson">
+              <PropertyRef Name="ContactPersonId" />
+            </Principal>
+            <Dependent Role="PhoneNumber">
+              <PropertyRef Name="ContactPersonFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PhoneNumber_PhoneType">
+          <End Role="PhoneType" Type="Self.PhoneType" Multiplicity="1" />
+          <End Role="PhoneNumber" Type="Self.PhoneNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhoneType">
+              <PropertyRef Name="PhoneTypeId" />
+            </Principal>
+            <Dependent Role="PhoneNumber">
+              <PropertyRef Name="PhoneTypeFk" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -67,8 +220,15 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
           <Parameter Name="msg" Type="text" Mode="In" />
         </Function>
         <EntityContainer Name="SysInventoryModelStoreContainer">
+          <EntitySet Name="Address" EntityType="Self.Address" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AddressType" EntityType="Self.AddressType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="City" EntityType="Self.City" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ContactPerson" EntityType="Self.ContactPerson" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhoneNumber" EntityType="Self.PhoneNumber" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhoneType" EntityType="Self.PhoneType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="v_logentries" EntityType="Self.v_logentries" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [v_logentries].[id] AS [id], 
@@ -80,9 +240,37 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
     [v_logentries].[Message] AS [Message]
     FROM [dbo].[v_logentries] AS [v_logentries]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="Address_City" Association="Self.Address_City">
+            <End Role="City" EntitySet="City" />
+            <End Role="Address" EntitySet="Address" />
+          </AssociationSet>
+          <AssociationSet Name="ContactPerson_Address" Association="Self.ContactPerson_Address">
+            <End Role="Address" EntitySet="Address" />
+            <End Role="ContactPerson" EntitySet="ContactPerson" />
+          </AssociationSet>
+          <AssociationSet Name="ContactPerson_AddressType" Association="Self.ContactPerson_AddressType">
+            <End Role="AddressType" EntitySet="AddressType" />
+            <End Role="ContactPerson" EntitySet="ContactPerson" />
+          </AssociationSet>
+          <AssociationSet Name="Customer_Address" Association="Self.Customer_Address">
+            <End Role="Address" EntitySet="Address" />
+            <End Role="Customer" EntitySet="Customer" />
+          </AssociationSet>
+          <AssociationSet Name="Customer_AddressType" Association="Self.Customer_AddressType">
+            <End Role="AddressType" EntitySet="AddressType" />
+            <End Role="Customer" EntitySet="Customer" />
+          </AssociationSet>
           <AssociationSet Name="Hierarchie" Association="Self.Hierarchie">
             <End Role="Location" EntitySet="Location" />
             <End Role="Location1" EntitySet="Location" />
+          </AssociationSet>
+          <AssociationSet Name="PhoneNumber_ContactPerson" Association="Self.PhoneNumber_ContactPerson">
+            <End Role="ContactPerson" EntitySet="ContactPerson" />
+            <End Role="PhoneNumber" EntitySet="PhoneNumber" />
+          </AssociationSet>
+          <AssociationSet Name="PhoneNumber_PhoneType" Association="Self.PhoneNumber_PhoneType">
+            <End Role="PhoneType" EntitySet="PhoneType" />
+            <End Role="PhoneNumber" EntitySet="PhoneNumber" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -147,6 +335,41 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
             <Parameter Name="msg" Mode="In" Type="String" />
           </FunctionImport>
           <EntitySet Name="LogEfs" EntityType="SysInventoryModel.LogEf" />
+          <EntitySet Name="Addresses" EntityType="SysInventoryModel.Address" />
+          <EntitySet Name="AddressTypes" EntityType="SysInventoryModel.AddressType" />
+          <EntitySet Name="Customers" EntityType="SysInventoryModel.Customer" />
+          <EntitySet Name="PhoneNumbers" EntityType="SysInventoryModel.PhoneNumber" />
+          <EntitySet Name="PhoneTypes" EntityType="SysInventoryModel.PhoneType" />
+          <AssociationSet Name="Customer_Address" Association="SysInventoryModel.Customer_Address">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="Customer_AddressType" Association="SysInventoryModel.Customer_AddressType">
+            <End Role="AddressType" EntitySet="AddressTypes" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="PhoneNumber_PhoneType" Association="SysInventoryModel.PhoneNumber_PhoneType">
+            <End Role="PhoneType" EntitySet="PhoneTypes" />
+            <End Role="PhoneNumber" EntitySet="PhoneNumbers" />
+          </AssociationSet>
+          <EntitySet Name="Cities" EntityType="SysInventoryModel.City" />
+          <EntitySet Name="ContactPersons" EntityType="SysInventoryModel.ContactPerson" />
+          <AssociationSet Name="Address_City" Association="SysInventoryModel.Address_City">
+            <End Role="City" EntitySet="Cities" />
+            <End Role="Address" EntitySet="Addresses" />
+          </AssociationSet>
+          <AssociationSet Name="ContactPerson_Address" Association="SysInventoryModel.ContactPerson_Address">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="ContactPerson" EntitySet="ContactPersons" />
+          </AssociationSet>
+          <AssociationSet Name="ContactPerson_AddressType" Association="SysInventoryModel.ContactPerson_AddressType">
+            <End Role="AddressType" EntitySet="AddressTypes" />
+            <End Role="ContactPerson" EntitySet="ContactPersons" />
+          </AssociationSet>
+          <AssociationSet Name="PhoneNumber_ContactPerson" Association="SysInventoryModel.PhoneNumber_ContactPerson">
+            <End Role="ContactPerson" EntitySet="ContactPersons" />
+            <End Role="PhoneNumber" EntitySet="PhoneNumbers" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="LogEf">
           <Key>
@@ -159,6 +382,173 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Confirmed" Type="Boolean" Nullable="false" />
         </EntityType>
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Street" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HouseNo" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CityFk" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Customers" Relationship="SysInventoryModel.Customer_Address" FromRole="Address" ToRole="Customer" />
+          <NavigationProperty Name="City" Relationship="SysInventoryModel.Address_City" FromRole="Address" ToRole="City" />
+          <NavigationProperty Name="ContactPersons" Relationship="SysInventoryModel.ContactPerson_Address" FromRole="Address" ToRole="ContactPerson" />
+        </EntityType>
+        <EntityType Name="AddressType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Customers" Relationship="SysInventoryModel.Customer_AddressType" FromRole="AddressType" ToRole="Customer" />
+          <NavigationProperty Name="ContactPersons" Relationship="SysInventoryModel.ContactPerson_AddressType" FromRole="AddressType" ToRole="ContactPerson" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Mail" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="InactivedAt" Type="DateTime" Precision="0" />
+          <Property Name="AddressFk" Type="Guid" Nullable="false" />
+          <Property Name="AddressTypeFk" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Address" Relationship="SysInventoryModel.Customer_Address" FromRole="Customer" ToRole="Address" />
+          <NavigationProperty Name="AddressType" Relationship="SysInventoryModel.Customer_AddressType" FromRole="Customer" ToRole="AddressType" />
+        </EntityType>
+        <EntityType Name="PhoneNumber">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Number" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneTypeFk" Type="Guid" Nullable="false" />
+          <Property Name="ContactPersonFk" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="PhoneType" Relationship="SysInventoryModel.PhoneNumber_PhoneType" FromRole="PhoneNumber" ToRole="PhoneType" />
+          <NavigationProperty Name="ContactPerson" Relationship="SysInventoryModel.PhoneNumber_ContactPerson" FromRole="PhoneNumber" ToRole="ContactPerson" />
+        </EntityType>
+        <EntityType Name="PhoneType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PhoneNumbers" Relationship="SysInventoryModel.PhoneNumber_PhoneType" FromRole="PhoneType" ToRole="PhoneNumber" />
+        </EntityType>
+        <Association Name="Customer_Address">
+          <End Type="SysInventoryModel.Address" Role="Address" Multiplicity="1" />
+          <End Type="SysInventoryModel.Customer" Role="Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="AddressFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Customer_AddressType">
+          <End Type="SysInventoryModel.AddressType" Role="AddressType" Multiplicity="1" />
+          <End Type="SysInventoryModel.Customer" Role="Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AddressType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="AddressTypeFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PhoneNumber_PhoneType">
+          <End Type="SysInventoryModel.PhoneType" Role="PhoneType" Multiplicity="1" />
+          <End Type="SysInventoryModel.PhoneNumber" Role="PhoneNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhoneType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PhoneNumber">
+              <PropertyRef Name="PhoneTypeFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="City">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ZipCode" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City1" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Addresses" Relationship="SysInventoryModel.Address_City" FromRole="City" ToRole="Address" />
+        </EntityType>
+        <EntityType Name="ContactPerson">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Salutation" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Firstname" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Lastname" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Mail" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Role" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Department" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="AddressFk" Type="Guid" Nullable="false" />
+          <Property Name="AddressTypeFk" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Address" Relationship="SysInventoryModel.ContactPerson_Address" FromRole="ContactPerson" ToRole="Address" />
+          <NavigationProperty Name="AddressType" Relationship="SysInventoryModel.ContactPerson_AddressType" FromRole="ContactPerson" ToRole="AddressType" />
+          <NavigationProperty Name="PhoneNumbers" Relationship="SysInventoryModel.PhoneNumber_ContactPerson" FromRole="ContactPerson" ToRole="PhoneNumber" />
+        </EntityType>
+        <Association Name="Address_City">
+          <End Type="SysInventoryModel.City" Role="City" Multiplicity="1" />
+          <End Type="SysInventoryModel.Address" Role="Address" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="City">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Address">
+              <PropertyRef Name="CityFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ContactPerson_Address">
+          <End Type="SysInventoryModel.Address" Role="Address" Multiplicity="1" />
+          <End Type="SysInventoryModel.ContactPerson" Role="ContactPerson" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ContactPerson">
+              <PropertyRef Name="AddressFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ContactPerson_AddressType">
+          <End Type="SysInventoryModel.AddressType" Role="AddressType" Multiplicity="1" />
+          <End Type="SysInventoryModel.ContactPerson" Role="ContactPerson" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AddressType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ContactPerson">
+              <PropertyRef Name="AddressTypeFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PhoneNumber_ContactPerson">
+          <End Type="SysInventoryModel.ContactPerson" Role="ContactPerson" Multiplicity="1" />
+          <End Type="SysInventoryModel.PhoneNumber" Role="PhoneNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ContactPerson">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PhoneNumber">
+              <PropertyRef Name="ContactPersonFk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -199,6 +589,82 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
                 <ScalarProperty Name="DeviceFk" ColumnName="DeviceFk" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="LogId" ColumnName="LogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Addresses">
+            <EntityTypeMapping TypeName="SysInventoryModel.Address">
+              <MappingFragment StoreEntitySet="Address">
+                <ScalarProperty Name="CityFk" ColumnName="CityFk" />
+                <ScalarProperty Name="HouseNo" ColumnName="HouseNo" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Id" ColumnName="AddressId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AddressTypes">
+            <EntityTypeMapping TypeName="SysInventoryModel.AddressType">
+              <MappingFragment StoreEntitySet="AddressType">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="AddressTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="SysInventoryModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="AddressTypeFk" ColumnName="AddressTypeFk" />
+                <ScalarProperty Name="AddressFk" ColumnName="AddressFk" />
+                <ScalarProperty Name="InactivedAt" ColumnName="InactivedAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Mail" ColumnName="Mail" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="CustomerNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhoneNumbers">
+            <EntityTypeMapping TypeName="SysInventoryModel.PhoneNumber">
+              <MappingFragment StoreEntitySet="PhoneNumber">
+                <ScalarProperty Name="ContactPersonFk" ColumnName="ContactPersonFk" />
+                <ScalarProperty Name="PhoneTypeFk" ColumnName="PhoneTypeFk" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="Id" ColumnName="PhoneNumberId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhoneTypes">
+            <EntityTypeMapping TypeName="SysInventoryModel.PhoneType">
+              <MappingFragment StoreEntitySet="PhoneType">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="PhoneTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cities">
+            <EntityTypeMapping TypeName="SysInventoryModel.City">
+              <MappingFragment StoreEntitySet="City">
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="City1" ColumnName="City" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="Id" ColumnName="CityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContactPersons">
+            <EntityTypeMapping TypeName="SysInventoryModel.ContactPerson">
+              <MappingFragment StoreEntitySet="ContactPerson">
+                <ScalarProperty Name="AddressTypeFk" ColumnName="AddressTypeFk" />
+                <ScalarProperty Name="AddressFk" ColumnName="AddressFk" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="Mail" ColumnName="Mail" />
+                <ScalarProperty Name="Lastname" ColumnName="Lastname" />
+                <ScalarProperty Name="Firstname" ColumnName="Firstname" />
+                <ScalarProperty Name="Salutation" ColumnName="Salutation" />
+                <ScalarProperty Name="Id" ColumnName="ContactPersonId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

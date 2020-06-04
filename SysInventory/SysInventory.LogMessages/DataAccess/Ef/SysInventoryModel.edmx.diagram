@@ -5,10 +5,24 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="816326b38a604c918d06923261c113e9" Name="Diagram1">
-        <EntityTypeShape EntityType="SysInventoryModel.LocationEf" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SysInventoryModel.v_logentries" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SysInventoryModel.LocationEf" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SysInventoryModel.v_logentries" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="false" />
         <AssociationConnector Association="SysInventoryModel.Hierarchie" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="SysInventoryModel.LogEf" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="SysInventoryModel.LogEf" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="SysInventoryModel.Address" Width="1.5" PointX="3.375" PointY="8.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="SysInventoryModel.AddressType" Width="1.5" PointX="3.375" PointY="5.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SysInventoryModel.Customer" Width="1.5" PointX="6.125" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SysInventoryModel.PhoneNumber" Width="1.5" PointX="7.625" PointY="0.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="SysInventoryModel.PhoneType" Width="1.5" PointX="5.375" PointY="1.125" IsExpanded="false" />
+        <AssociationConnector Association="SysInventoryModel.Customer_Address" />
+        <AssociationConnector Association="SysInventoryModel.Customer_AddressType" />
+        <AssociationConnector Association="SysInventoryModel.PhoneNumber_PhoneType" />
+        <EntityTypeShape EntityType="SysInventoryModel.City" Width="1.5" PointX="1.125" PointY="8.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SysInventoryModel.ContactPerson" Width="1.5" PointX="5.625" PointY="9.375" IsExpanded="false" />
+        <AssociationConnector Association="SysInventoryModel.Address_City" />
+        <AssociationConnector Association="SysInventoryModel.ContactPerson_Address" />
+        <AssociationConnector Association="SysInventoryModel.ContactPerson_AddressType" />
+        <AssociationConnector Association="SysInventoryModel.PhoneNumber_ContactPerson" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

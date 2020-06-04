@@ -12,14 +12,20 @@ namespace SysInventory.LogMessages.DataAccess.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class v_logentries
+    public partial class City
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public City()
+        {
+            this.Addresses = new HashSet<Address>();
+        }
+    
         public System.Guid Id { get; set; }
-        public string PoD { get; set; }
-        public string Location { get; set; }
-        public string Hostname { get; set; }
-        public int Severity { get; set; }
-        public System.DateTime Timestamp { get; set; }
-        public string Message { get; set; }
+        public string ZipCode { get; set; }
+        public string City1 { get; set; }
+        public string Country { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Address> Addresses { get; set; }
     }
 }

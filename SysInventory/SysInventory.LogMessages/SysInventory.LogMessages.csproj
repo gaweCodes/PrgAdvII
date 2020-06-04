@@ -62,12 +62,31 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddLogEntryDialog.xaml.cs">
+    <Compile Include="DataAccess\Ef\AddressTypeRepository.cs" />
+    <Compile Include="DataAccess\Ef\City.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\ContactPerson.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\AddressRepository.cs" />
+    <Compile Include="DataAccess\Ef\CustomerRepository.cs" />
+    <Compile Include="ViewModels\CustomersViewModel.cs" />
+    <Compile Include="Views\AddLogEntryDialog.xaml.cs">
       <DependentUpon>AddLogEntryDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\AdoNet\AdoNetBaseRepository.cs" />
     <Compile Include="DataAccess\AdoNet\LocationRepository.cs" />
     <Compile Include="DataAccess\AdoNet\LogRepository.cs" />
+    <Compile Include="DataAccess\Ef\Address.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\AddressType.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\Customer.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataAccess\Ef\EfBaseRepository.cs" />
     <Compile Include="DataAccess\Ef\LocationEf.cs">
       <DependentUpon>SysInventoryModel.tt</DependentUpon>
@@ -77,6 +96,12 @@
     </Compile>
     <Compile Include="DataAccess\Ef\LocationRepository.cs" />
     <Compile Include="DataAccess\Ef\LogRepository.cs" />
+    <Compile Include="DataAccess\Ef\PhoneNumber.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\PhoneType.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataAccess\Ef\SysInventoryModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -106,7 +131,28 @@
     </Compile>
     <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="IRelayCommand.cs" />
-    <Compile Include="Locations.xaml.cs">
+    <Compile Include="Views\AddressDetail.xaml.cs">
+      <DependentUpon>AddressDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Addresses.xaml.cs">
+      <DependentUpon>Addresses.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddressTypes.xaml.cs">
+      <DependentUpon>AddressTypes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Cities.xaml.cs">
+      <DependentUpon>Cities.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ContactPersonDetail.xaml.cs">
+      <DependentUpon>ContactPersonDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ContactPersons.xaml.cs">
+      <DependentUpon>ContactPersons.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CustomersView.xaml.cs">
+      <DependentUpon>CustomersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Locations.xaml.cs">
       <DependentUpon>Locations.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\IIdentifiable.cs" />
@@ -124,22 +170,64 @@
     <Compile Include="ViewModels\LocationsViewModel.cs" />
     <Compile Include="ViewModels\LogEntriesViewModel.cs" />
     <Compile Include="ViewModels\MasterDetailViewModel.cs" />
-    <Page Include="AddLogEntryDialog.xaml">
+    <Compile Include="Views\PhoneNumbers.xaml.cs">
+      <DependentUpon>PhoneNumbers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PhoneNumberTypes.xaml.cs">
+      <DependentUpon>PhoneNumberTypes.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\AddLogEntryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Locations.xaml">
+    <Page Include="Views\AddressDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LogEntries.xaml">
+    <Page Include="Views\Addresses.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddressTypes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Cities.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ContactPersonDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ContactPersons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CustomersView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Locations.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LogEntries.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="LogEntries.xaml.cs">
+    <Compile Include="Views\LogEntries.xaml.cs">
       <DependentUpon>LogEntries.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\PhoneNumbers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PhoneNumberTypes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

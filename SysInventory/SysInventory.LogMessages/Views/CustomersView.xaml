@@ -1,0 +1,69 @@
+﻿<Window x:Class="SysInventory.LogMessages.Views.CustomersView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:SysInventory.LogMessages.ViewModels"
+        mc:Ignorable="d"
+        Title="Customers" Height="600" Width="900" Margin="10">
+    <Window.DataContext>
+        <viewModels:CustomersViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical" Margin="10">
+            <GroupBox Header="Search">
+                <StackPanel Orientation="Vertical">
+                    <Label>Customer No.</Label>
+                    <TextBox Text="{Binding CustomerNoSearchParam}"/>
+                    <Label>Name</Label>
+                    <TextBox Text="{Binding NameSearchParam}"/>
+                    <Label>Mail</Label>
+                    <TextBox Text="{Binding MailSearchParam}"/>
+                    <Button Content="Find Customers" Command="{Binding SearchCommand}"></Button>
+                </StackPanel>
+            </GroupBox>
+            <DataGrid Name="CustomersGrid" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding ShowingItems}" CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserResizeRows="True" CanUserSortColumns="True" IsReadOnly="true">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding LoadDetailsCommand}" CommandParameter="{Binding ElementName=CustomersGrid, Path=SelectedItem}" x:Name="InteractivityFix"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </DataGrid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Create" Command="{Binding CreateItemCommand}"/>
+                <Button Content="Delete" Grid.Column="2" Command="{Binding DeleteItemCommand}" />
+            </Grid>
+        </StackPanel>
+        <StackPanel Grid.Column="2">
+            <Label FontSize="20" FontWeight="Bold">Details</Label>
+            <Label>Customer no</Label>
+            <TextBox IsReadOnly="True" Text="{Binding SelectedItem.Id}"/>
+            <Label>Name</Label>
+            <TextBox Text="{Binding SelectedItem.Name}"/>
+            <Label>Mail</Label>
+            <TextBox Text="{Binding SelectedItem.Mail}"/>
+            <Label>Address type</Label>
+            <ComboBox SelectedItem="{Binding SelectedItem.AddressType}" ItemsSource="{Binding AddressTypes}"/>
+            <Label>Address</Label>
+            <ComboBox SelectedItem="{Binding SelectedItem.Address}" ItemsSource="{Binding Addresses}"/>
+            <Button Content="Save" Command="{Binding SaveCurrentItemCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

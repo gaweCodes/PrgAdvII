@@ -12,21 +12,28 @@ namespace SysInventory.LogMessages.DataAccess.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class LocationEf
+    public partial class ContactPerson
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public LocationEf()
+        public ContactPerson()
         {
-            this.Location1 = new HashSet<LocationEf>();
+            this.PhoneNumbers = new HashSet<PhoneNumber>();
         }
     
         public System.Guid Id { get; set; }
-        public string Name { get; set; }
-        public System.Guid PoDId { get; set; }
-        public Nullable<System.Guid> ParentId { get; set; }
+        public string Salutation { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public string Mail { get; set; }
+        public string Role { get; set; }
+        public string Department { get; set; }
+        public bool IsActive { get; set; }
+        public System.Guid AddressFk { get; set; }
+        public System.Guid AddressTypeFk { get; set; }
     
+        public virtual Address Address { get; set; }
+        public virtual AddressType AddressType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LocationEf> Location1 { get; set; }
-        public virtual LocationEf Location2 { get; set; }
+        public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
     }
 }

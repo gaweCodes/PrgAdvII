@@ -30,6 +30,13 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         public virtual DbSet<LocationEf> LocationEfs { get; set; }
         public virtual DbSet<v_logentries> v_logentries { get; set; }
         public virtual DbSet<LogEf> LogEfs { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<AddressType> AddressTypes { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<PhoneNumber> PhoneNumbers { get; set; }
+        public virtual DbSet<PhoneType> PhoneTypes { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<ContactPerson> ContactPersons { get; set; }
     
         public virtual int LogClear(Nullable<System.Guid> id)
         {

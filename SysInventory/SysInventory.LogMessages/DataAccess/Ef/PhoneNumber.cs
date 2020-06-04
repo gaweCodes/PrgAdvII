@@ -12,14 +12,14 @@ namespace SysInventory.LogMessages.DataAccess.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class v_logentries
+    public partial class PhoneNumber
     {
         public System.Guid Id { get; set; }
-        public string PoD { get; set; }
-        public string Location { get; set; }
-        public string Hostname { get; set; }
-        public int Severity { get; set; }
-        public System.DateTime Timestamp { get; set; }
-        public string Message { get; set; }
+        public string Number { get; set; }
+        public System.Guid PhoneTypeFk { get; set; }
+        public System.Guid ContactPersonFk { get; set; }
+    
+        public virtual PhoneType PhoneType { get; set; }
+        public virtual ContactPerson ContactPerson { get; set; }
     }
 }

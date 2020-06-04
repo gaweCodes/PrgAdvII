@@ -12,14 +12,17 @@ namespace SysInventory.LogMessages.DataAccess.Ef
     using System;
     using System.Collections.Generic;
     
-    public partial class v_logentries
+    public partial class Customer
     {
         public System.Guid Id { get; set; }
-        public string PoD { get; set; }
-        public string Location { get; set; }
-        public string Hostname { get; set; }
-        public int Severity { get; set; }
-        public System.DateTime Timestamp { get; set; }
-        public string Message { get; set; }
+        public string Name { get; set; }
+        public string Mail { get; set; }
+        public System.DateTime CreatedAt { get; set; }
+        public Nullable<System.DateTime> InactivedAt { get; set; }
+        public System.Guid AddressFk { get; set; }
+        public System.Guid AddressTypeFk { get; set; }
+    
+        public virtual Address Address { get; set; }
+        public virtual AddressType AddressType { get; set; }
     }
 }
