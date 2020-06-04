@@ -117,7 +117,7 @@ namespace SysInventory.LogMessages.ViewModels
         private void OpenCustomersWindow()
         {
             UpdateSettings();
-            new Customers().ShowDialog();
+            new CustomersView().ShowDialog();
         }
         protected virtual void SearchItems()
         {

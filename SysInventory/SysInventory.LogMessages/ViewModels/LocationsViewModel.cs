@@ -23,7 +23,6 @@ namespace SysInventory.LogMessages.ViewModels
                 LoadLocationsTree();
             }
         }
-
         public LocationsViewModel()
         {
             ShowingItems = new ObservableCollection<LocationTreeViewitem>();

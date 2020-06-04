@@ -62,12 +62,14 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAccess\Ef\AddressTypeRepository.cs" />
     <Compile Include="DataAccess\Ef\City.cs">
       <DependentUpon>SysInventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\Ef\ContactPerson.cs">
       <DependentUpon>SysInventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataAccess\Ef\AddressRepository.cs" />
     <Compile Include="DataAccess\Ef\CustomerRepository.cs" />
     <Compile Include="ViewModels\CustomersViewModel.cs" />
     <Compile Include="Views\AddLogEntryDialog.xaml.cs">
@@ -147,11 +149,8 @@
     <Compile Include="Views\ContactPersons.xaml.cs">
       <DependentUpon>ContactPersons.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CustomerDetail.xaml.cs">
-      <DependentUpon>CustomerDetail.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Customers.xaml.cs">
-      <DependentUpon>Customers.xaml</DependentUpon>
+    <Compile Include="Views\CustomersView.xaml.cs">
+      <DependentUpon>CustomersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Locations.xaml.cs">
       <DependentUpon>Locations.xaml</DependentUpon>
@@ -205,11 +204,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CustomerDetail.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Customers.xaml">
+    <Page Include="Views\CustomersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

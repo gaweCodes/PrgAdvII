@@ -32,6 +32,5 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         public virtual City City { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ContactPerson> ContactPersons { get; set; }
-        public override string ToString() => $"{Street} {HouseNo}{Environment.NewLine}{City}";
     }
 }

@@ -4,11 +4,22 @@ using System.Linq.Expressions;
 
 namespace SysInventory.LogMessages.DataAccess.Ef
 {
-    class CustomerRepository : EfBaseRepository<Customer>
+    internal class CustomerRepository : EfBaseRepository<Customer>
     {
         public override void Add(Customer entity)
         {
-            throw new NotImplementedException();
+            using (Context = new SysInventoryEntities())
+            {
+
+                entity.Id = Guid.NewGuid();
+                entity.CreatedAt = DateTime.Now;
+                entity.AddressFk = entity.Address.Id;
+                entity.Address = null;
+                entity.AddressTypeFk = entity.AddressType.Id;
+                entity.AddressType = null;
+                Context.Customers.Add(entity);
+                Context.SaveChanges();
+            }
         }
         public override long Count()
         {
@@ -26,7 +37,10 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         }
         public override void Delete(Customer entity)
         {
-            throw new NotImplementedException();
+            entity.Address = null;
+            entity.AddressType = null;
+            Context.Customers.Remove(entity);
+            Context.SaveChanges();
         }
         public override IQueryable<Customer> GetAll()
         {
@@ -38,15 +52,25 @@ namespace SysInventory.LogMessages.DataAccess.Ef
             Context = new SysInventoryEntities();
             return Context.Customers.Include("Address").Where(whereExpression);
         }
-
         public override Customer GetSingle<TKey>(TKey pkValue)
         {
-            throw new NotImplementedException();
+            using (Context = new SysInventoryEntities())
+            {
+                return Context.Customers.Find(pkValue);
+            }
         }
-
         public override void Update(Customer entity)
         {
-            throw new NotImplementedException();
+            using (Context = new SysInventoryEntities())
+            {
+                var found = Context.Customers.Find(entity.Id);
+                if(found == null) return;
+                found.Mail = entity.Mail;
+                found.Name = entity.Name;
+                found.AddressFk = entity.Address.Id;
+                found.AddressTypeFk = entity.AddressType.Id;
+                Context.SaveChanges();
+            }
         }
     }
 }

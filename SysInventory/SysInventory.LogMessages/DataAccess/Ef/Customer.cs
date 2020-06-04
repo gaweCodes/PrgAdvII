@@ -7,14 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using SysInventory.LogMessages.Models;
-
 namespace SysInventory.LogMessages.DataAccess.Ef
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Customer : IIdentifiable
+    public partial class Customer
     {
         public System.Guid Id { get; set; }
         public string Name { get; set; }

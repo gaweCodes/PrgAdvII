@@ -11,7 +11,7 @@
         <EntityTypeShape EntityType="SysInventoryModel.LogEf" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="false" />
         <EntityTypeShape EntityType="SysInventoryModel.Address" Width="1.5" PointX="3.375" PointY="8.25" IsExpanded="false" />
         <EntityTypeShape EntityType="SysInventoryModel.AddressType" Width="1.5" PointX="3.375" PointY="5.5" IsExpanded="false" />
-        <EntityTypeShape EntityType="SysInventoryModel.Customer" Width="1.5" PointX="5.625" PointY="5" IsExpanded="false" />
+        <EntityTypeShape EntityType="SysInventoryModel.Customer" Width="1.5" PointX="6.125" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="SysInventoryModel.PhoneNumber" Width="1.5" PointX="7.625" PointY="0.875" IsExpanded="false" />
         <EntityTypeShape EntityType="SysInventoryModel.PhoneType" Width="1.5" PointX="5.375" PointY="1.125" IsExpanded="false" />
         <AssociationConnector Association="SysInventoryModel.Customer_Address" />
