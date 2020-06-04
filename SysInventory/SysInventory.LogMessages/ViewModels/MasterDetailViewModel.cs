@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using SysInventory.LogMessages.Annotations;
@@ -62,9 +63,16 @@ namespace SysInventory.LogMessages.ViewModels
             if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) MessageBox.Show($"found {DataRepository.Count()} entries");
             else
             {
-                var count = Strategy == "AdoNet"
-                    ? DataRepository.Count(WhereCriteria, ParseSearchValues())
-                    : DataRepository.Count(null);
+                long count;
+                if(Strategy == "AdoNet") 
+                    count = DataRepository.Count(WhereCriteria, ParseSearchValues());
+                else if(Strategy == "LINQ")
+                {
+                    Expression<Func<T, bool>> exp = t => t.Id != Guid.Empty;
+                    count = DataRepository.Count(exp);
+                }
+                else
+                    count = DataRepository.Count(null);
                 if (count > -1) MessageBox.Show($"found {count} entries");
             }
         }

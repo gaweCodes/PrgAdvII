@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
 using SysInventory.LogMessages.Extensions;
 using SysInventory.LogMessages.Models;
@@ -76,13 +77,20 @@ namespace SysInventory.LogMessages.ViewModels
             SelectedItem = null;
         }
         private void CreateNewLocation() => SelectedItem = new Location {ParentId = SelectedItem?.Id};
-
         private void SearchItems()
         {
             if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadLocationsTree();
             else
             {
-                var foundEntries = DataRepository.GetAll(WhereCriteria, ParseSearchValues());
+                IQueryable<ILocation> foundEntries;
+                if(Strategy == "AdoNet")
+                    foundEntries = DataRepository.GetAll(WhereCriteria, ParseSearchValues());
+                else
+                {
+                    Expression<Func<ILocation, bool>> exp = loc => !string.IsNullOrWhiteSpace(loc.Name);
+                    exp = null;
+                    foundEntries = DataRepository.GetAll(exp);
+                }
                 var messageText = string.Empty;
                 foundEntries.ToList().ForEach(x => messageText += x + Environment.NewLine);
                 MessageBox.Show(messageText);
