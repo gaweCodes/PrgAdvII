@@ -7,12 +7,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using SysInventory.LogMessages.Models;
+
 namespace SysInventory.LogMessages.DataAccess.Ef
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class AddressType
+    public partial class AddressType : IIdentifiable, IEquatable<AddressType>
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AddressType()
@@ -28,5 +30,29 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         public virtual ICollection<Customer> Customers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ContactPerson> ContactPersons { get; set; }
+        public override string ToString() => Name;
+        public override bool Equals(object obj) => Equals(obj as AddressType);
+        public bool Equals(AddressType other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(ToString(), other.ToString());
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                const int hashingBase = (int)2166136261;
+                const int hashingMultiplier = 16777619;
+                var hash = hashingBase;
+                return (hash * hashingMultiplier) ^ ToString().GetHashCode();
+            }
+        }
+        public static bool operator ==(AddressType addressTypeA, AddressType addressTypeB)
+        {
+            if (ReferenceEquals(addressTypeA, addressTypeB)) return true;
+            return addressTypeA?.Equals(addressTypeB) == true;
+        }
+        public static bool operator !=(AddressType addressTypeA, AddressType addressTypeB) => !(addressTypeA == addressTypeB);
     }
 }

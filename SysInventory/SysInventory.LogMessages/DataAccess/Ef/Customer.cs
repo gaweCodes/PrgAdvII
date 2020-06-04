@@ -7,13 +7,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using SysInventory.LogMessages.Annotations;
+using SysInventory.LogMessages.Models;
+
 namespace SysInventory.LogMessages.DataAccess.Ef
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Customer
+    public partial class Customer : IIdentifiable, INotifyPropertyChanged
     {
+        private Address _address;
+        private AddressType _addressType;
         public System.Guid Id { get; set; }
         public string Name { get; set; }
         public string Mail { get; set; }
@@ -21,8 +28,32 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         public Nullable<System.DateTime> InactivedAt { get; set; }
         public System.Guid AddressFk { get; set; }
         public System.Guid AddressTypeFk { get; set; }
-    
-        public virtual Address Address { get; set; }
-        public virtual AddressType AddressType { get; set; }
+
+        public virtual Address Address
+        {
+            get => _address;
+            set
+            {
+                _address = value; 
+                OnPropertyChanged(nameof(Address));
+            }
+        }
+
+        public virtual AddressType AddressType
+        {
+            get => _addressType;
+            set
+            {
+                _addressType = value;
+                OnPropertyChanged(nameof(AddressType));
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
