@@ -6,6 +6,7 @@ using System.Windows;
 using DuplicateCheckerLib;
 using SysInventory.LogMessages.Models;
 using SysInventory.LogMessages.Properties;
+using SysInventory.LogMessages.Views;
 
 namespace SysInventory.LogMessages.ViewModels
 {
@@ -13,6 +14,7 @@ namespace SysInventory.LogMessages.ViewModels
     {
         public IRelayCommand FindDuplicateLogEntriesCommand { get; }
         public RelayCommand ShowInfoMessageCommand { get; }
+        public RelayCommand OpenCustomersWindowCommand { get; }
         public RelayCommand OpenLocationWindowCommand { get; }
         private string _connectionString;
         public string ConnectionString
@@ -52,6 +54,7 @@ namespace SysInventory.LogMessages.ViewModels
             CountItemsCommand = new RelayCommand(CountItems, CanConnectToDatabase);
             LoadFilteredItemsCommand = new RelayCommand(SearchItems, CanConnectToDatabase);
             OpenLocationWindowCommand = new RelayCommand(OpenLocationWindow, CanConnectToDatabase);
+            OpenCustomersWindowCommand = new RelayCommand(OpenCustomersWindow, CanConnectToDatabase);
         }
         private bool CanConnectToDatabase() => !string.IsNullOrWhiteSpace(ConnectionString);
         private void LoadUnconfirmedLogEntries()
@@ -110,6 +113,11 @@ namespace SysInventory.LogMessages.ViewModels
         {
             UpdateSettings();
             new Locations().ShowDialog();
+        }
+        private void OpenCustomersWindow()
+        {
+            UpdateSettings();
+            new Customers().ShowDialog();
         }
         protected virtual void SearchItems()
         {

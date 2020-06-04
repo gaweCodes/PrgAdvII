@@ -54,7 +54,6 @@ namespace SysInventory.LogMessages.ViewModels
         {
             ShowingItems.Clear();
             foreach (var itemm in listToAdd) ShowingItems.Add(itemm);
-            DataRepository.CleanUp();
         }
         protected T GetSingleEntry(Guid id) => DataRepository.GetSingle(id);
         protected void CountItems()

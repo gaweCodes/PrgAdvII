@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace SysInventory.LogMessages
+namespace SysInventory.LogMessages.Views
 {
         public partial class LogEntries : UserControl
         {
