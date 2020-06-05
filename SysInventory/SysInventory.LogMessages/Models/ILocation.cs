@@ -8,5 +8,6 @@ namespace SysInventory.LogMessages.Models
         string Name { get; set; }
         Guid PoDId { get; set; }
         Guid? ParentId { get; set; }
+        int? Level { get; set; }
     }
 }

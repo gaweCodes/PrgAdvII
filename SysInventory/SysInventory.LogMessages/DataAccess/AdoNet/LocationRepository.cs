@@ -13,7 +13,7 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
         private static readonly string _orderByBase = "ORDER BY Name";
         public override string TableName { get; protected set; } = "Location";
         protected override string SqlIdField { get; set; } = "LocationId";
-        protected virtual string SelectBase { get; } = "select LocationId, Name, PodFk, ParentId from Location";
+        protected virtual string SelectBase { get; } = "WITH CTE_Locations ( LocationId, Name, LocationLevel, PodFk, ParentId ) AS ( select LocationId, Name, 0 as LocationLevel, PodFk, ParentId from Location WHERE ParentId IS NULL UNION ALL select l.LocationId, l.Name, ctel.LocationLevel + 1, l.PodFk, l.ParentId from Location as l INNER JOIN CTE_Locations ctel ON ctel.LocationId = l.ParentId )SELECT* from CTE_Locations";
         public override void Add(ILocation entity)
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -132,9 +132,10 @@ namespace SysInventory.LogMessages.DataAccess.AdoNet
             {
                 Id = reader.GetGuid(0),
                 Name = reader.GetString(1),
-                PoDId = reader.GetGuid(2)
+                Level = reader.GetInt32(2),
+                PoDId = reader.GetGuid(3)
             };
-            if (!reader.IsDBNull(3)) location.ParentId = reader.GetGuid(3);
+            if (!reader.IsDBNull(4)) location.ParentId = reader.GetGuid(4);
             return location;
         }
         private static void AddParameters(SqlCommand cmd, ILocation entity)

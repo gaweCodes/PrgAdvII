@@ -14,6 +14,7 @@ namespace SysInventory.LogMessages.Models
         public Guid PoDId { get; set; }
         [Column(Name = "ParentId")]
         public Guid? ParentId { get; set; }
-        public override string ToString() => Name;
+        public int? Level { get; set; }
+        public override string ToString() => Level != null ? Name + " Level " + Level : Name;
     }
 }

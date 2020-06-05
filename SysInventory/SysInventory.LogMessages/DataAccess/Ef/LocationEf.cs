@@ -26,6 +26,7 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         public string Name { get; set; }
         public System.Guid PoDId { get; set; }
         public Nullable<System.Guid> ParentId { get; set; }
+        public int? Level { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LocationEf> Location1 { get; set; }
