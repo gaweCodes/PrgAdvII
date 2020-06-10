@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ExtensionMethods_QueryOperators
 {
-    public static class Program
+    internal static class Program
     {
         private static IEnumerable<string> Cities
         {
