@@ -28,17 +28,16 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         public Nullable<System.DateTime> InactivedAt { get; set; }
         public System.Guid AddressFk { get; set; }
         public System.Guid AddressTypeFk { get; set; }
-
+        public string CustomerNumber { get; set; }
         public virtual Address Address
         {
             get => _address;
             set
             {
-                _address = value; 
+                _address = value;
                 OnPropertyChanged(nameof(Address));
             }
         }
-
         public virtual AddressType AddressType
         {
             get => _addressType;

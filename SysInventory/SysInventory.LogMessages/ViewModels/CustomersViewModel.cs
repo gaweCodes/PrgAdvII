@@ -2,12 +2,14 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Windows;
 using SysInventory.LogMessages.DataAccess.Ef;
 
 namespace SysInventory.LogMessages.ViewModels
 {
     internal class CustomersViewModel : MasterDetailViewModel<Customer, Customer>, INotifyPropertyChanged
     {
+        private readonly MyRegExValidations _regExValidation = new MyRegExValidations();
         public string CustomerNoSearchParam { get; set; }
         public string NameSearchParam { get; set; }
         public string MailSearchParam { get; set; }
@@ -73,6 +75,7 @@ namespace SysInventory.LogMessages.ViewModels
         }
         private void SaveCurrentCustomer()
         {
+            if(!ValidateCustomer()) return;
             if (SelectedItem.Id == Guid.Empty) DataRepository.Add(SelectedItem);
             else DataRepository.Update(SelectedItem);
             LoadAllCustomers();
@@ -89,6 +92,20 @@ namespace SysInventory.LogMessages.ViewModels
             DataRepository.Delete(SelectedItem);
             LoadAllCustomers();
             SelectedItem = null;
+        }
+        private bool ValidateCustomer()
+        {
+            if (!_regExValidation.ValidateCustomerNo(SelectedItem.CustomerNumber))
+            {
+                MessageBox.Show("Invalid customer number. It must start with CU following 5 numbers");
+                return false;
+            }
+            if (!_regExValidation.ValidateEMail(SelectedItem.Mail))
+            {
+                MessageBox.Show(@"Invalid mail address.");
+                return false;
+            }
+            return true;
         }
     }
 }

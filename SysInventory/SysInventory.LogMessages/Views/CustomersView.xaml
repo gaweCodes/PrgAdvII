@@ -5,6 +5,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:SysInventory.LogMessages.ViewModels"
+        xmlns:logMessages="clr-namespace:SysInventory.LogMessages"
         mc:Ignorable="d"
         Title="Customers" Height="600" Width="900" Margin="10">
     <Window.DataContext>
@@ -54,9 +55,9 @@
         <StackPanel Grid.Column="2">
             <Label FontSize="20" FontWeight="Bold">Details</Label>
             <Label>Customer no</Label>
-            <TextBox IsReadOnly="True" Text="{Binding SelectedItem.Id}"/>
+            <TextBox Text="{Binding SelectedItem.CustomerNumber}"/>
             <Label>Name</Label>
-            <TextBox Text="{Binding SelectedItem.Name}"/>
+            <TextBox Text="{Binding SelectedItem.Name}" />
             <Label>Mail</Label>
             <TextBox Text="{Binding SelectedItem.Mail}"/>
             <Label>Address type</Label>

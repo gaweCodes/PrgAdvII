@@ -57,6 +57,7 @@
           <Property Name="InactivedAt" Type="datetime2" Precision="0" />
           <Property Name="AddressFk" Type="uniqueidentifier" Nullable="false" />
           <Property Name="AddressTypeFk" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CustomerNumber" Type="nvarchar" MaxLength="7" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -417,6 +418,7 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
           <Property Name="AddressTypeFk" Type="Guid" Nullable="false" />
           <NavigationProperty Name="Address" Relationship="SysInventoryModel.Customer_Address" FromRole="Customer" ToRole="Address" />
           <NavigationProperty Name="AddressType" Relationship="SysInventoryModel.Customer_AddressType" FromRole="Customer" ToRole="AddressType" />
+          <Property Name="CustomerNumber" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="PhoneNumber">
           <Key>
@@ -614,6 +616,7 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="SysInventoryModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="CustomerNumber" ColumnName="CustomerNumber" />
                 <ScalarProperty Name="AddressTypeFk" ColumnName="AddressTypeFk" />
                 <ScalarProperty Name="AddressFk" ColumnName="AddressFk" />
                 <ScalarProperty Name="InactivedAt" ColumnName="InactivedAt" />
