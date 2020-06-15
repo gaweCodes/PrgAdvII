@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using SysInventory.LogMessages.DataAccess.Ef;
 
@@ -76,6 +78,7 @@ namespace SysInventory.LogMessages.ViewModels
         private void SaveCurrentCustomer()
         {
             if(!ValidateCustomer()) return;
+            SelectedItem.Password = ComputeSHA256Hash(SelectedItem.Password);
             if (SelectedItem.Id == Guid.Empty) DataRepository.Add(SelectedItem);
             else DataRepository.Update(SelectedItem);
             LoadAllCustomers();
@@ -105,7 +108,39 @@ namespace SysInventory.LogMessages.ViewModels
                 MessageBox.Show(@"Invalid mail address.");
                 return false;
             }
+            if (!_regExValidation.ValidateUrl(SelectedItem.Website))
+            {
+                MessageBox.Show(@"Invalid url.");
+                return false;
+            }
+            if (!_regExValidation.ValidatePassword(SelectedItem.Password))
+            {
+                MessageBox.Show(@"Invalid invalid password.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(SelectedItem.Name))
+            {
+                MessageBox.Show(@"Name is required.");
+                return false;
+            }
+            if (SelectedItem.Address == null)
+            {
+                MessageBox.Show(@"Select an address.");
+                return false;
+            }
+            if (SelectedItem.AddressType == null)
+            {
+                MessageBox.Show(@"Select an address type.");
+                return false;
+            }
             return true;
+        }
+        private string ComputeSHA256Hash(string text)
+        {
+            using (var sha256 = new SHA256Managed())
+            {
+                return BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(text))).Replace("-", "");
+            }
         }
     }
 }

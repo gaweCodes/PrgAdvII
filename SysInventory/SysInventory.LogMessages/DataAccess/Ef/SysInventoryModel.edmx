@@ -58,6 +58,8 @@
           <Property Name="AddressFk" Type="uniqueidentifier" Nullable="false" />
           <Property Name="AddressTypeFk" Type="uniqueidentifier" Nullable="false" />
           <Property Name="CustomerNumber" Type="nvarchar" MaxLength="7" />
+          <Property Name="Website" Type="nvarchar(max)" />
+          <Property Name="Password" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -419,6 +421,8 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
           <NavigationProperty Name="Address" Relationship="SysInventoryModel.Customer_Address" FromRole="Customer" ToRole="Address" />
           <NavigationProperty Name="AddressType" Relationship="SysInventoryModel.Customer_AddressType" FromRole="Customer" ToRole="AddressType" />
           <Property Name="CustomerNumber" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="Website" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="PhoneNumber">
           <Key>
@@ -616,6 +620,8 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="SysInventoryModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
                 <ScalarProperty Name="CustomerNumber" ColumnName="CustomerNumber" />
                 <ScalarProperty Name="AddressTypeFk" ColumnName="AddressTypeFk" />
                 <ScalarProperty Name="AddressFk" ColumnName="AddressFk" />

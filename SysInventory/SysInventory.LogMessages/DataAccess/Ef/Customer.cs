@@ -11,12 +11,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using SysInventory.LogMessages.Annotations;
 using SysInventory.LogMessages.Models;
+using System;
+using System.Collections.Generic;
 
 namespace SysInventory.LogMessages.DataAccess.Ef
 {
-    using System;
-    using System.Collections.Generic;
-    
     public partial class Customer : IIdentifiable, INotifyPropertyChanged
     {
         private Address _address;
@@ -29,6 +28,8 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         public System.Guid AddressFk { get; set; }
         public System.Guid AddressTypeFk { get; set; }
         public string CustomerNumber { get; set; }
+        public string Website { get; set; }
+        public string Password { get; set; }
         public virtual Address Address
         {
             get => _address;

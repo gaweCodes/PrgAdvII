@@ -23,5 +23,11 @@ namespace SysInventory.LogMessages
             var regex = new Regex(@"(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?");
             return regex.IsMatch(url);
         }
+        public bool ValidatePassword(string password)
+        {
+            if (password == null) return false;
+            var regex = new Regex(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$");
+            return regex.IsMatch(password);
+        }
     }
 }

@@ -5,7 +5,6 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:SysInventory.LogMessages.ViewModels"
-        xmlns:logMessages="clr-namespace:SysInventory.LogMessages"
         mc:Ignorable="d"
         Title="Customers" Height="600" Width="900" Margin="10">
     <Window.DataContext>
@@ -60,6 +59,10 @@
             <TextBox Text="{Binding SelectedItem.Name}" />
             <Label>Mail</Label>
             <TextBox Text="{Binding SelectedItem.Mail}"/>
+            <Label>Website</Label>
+            <TextBox Text="{Binding SelectedItem.Website}"/>
+            <Label>Passwrd</Label>
+            <TextBox Text="{Binding SelectedItem.Password}"/>
             <Label>Address type</Label>
             <ComboBox SelectedItem="{Binding SelectedItem.AddressType}" ItemsSource="{Binding AddressTypes}"/>
             <Label>Address</Label>
