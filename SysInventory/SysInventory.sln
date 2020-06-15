@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuplicateCheckerLib", "Dupl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{2A724439-5079-4019-A27D-051C43B85251}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysInventory.Test", "SysInventory.Test\SysInventory.Test.csproj", "{B3243B8A-7F3F-471C-B927-63DBA49E504E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2A724439-5079-4019-A27D-051C43B85251}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A724439-5079-4019-A27D-051C43B85251}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A724439-5079-4019-A27D-051C43B85251}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3243B8A-7F3F-471C-B927-63DBA49E504E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3243B8A-7F3F-471C-B927-63DBA49E504E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3243B8A-7F3F-471C-B927-63DBA49E504E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3243B8A-7F3F-471C-B927-63DBA49E504E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
