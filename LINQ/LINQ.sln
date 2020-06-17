@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionMethods_Exceptions
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryExpressions", "QueryExpressions\QueryExpressions.csproj", "{3D7A52E8-0E6D-48D6-938F-1525C7B7E59F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq", "Linq\Linq.csproj", "{4F6AA80C-4441-4C41-A0EB-AED45205348E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToSql", "LinqToSql\LinqToSql.csproj", "{D1CE59EC-414C-415D-94F0-3D9541DF59B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{3D7A52E8-0E6D-48D6-938F-1525C7B7E59F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D7A52E8-0E6D-48D6-938F-1525C7B7E59F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D7A52E8-0E6D-48D6-938F-1525C7B7E59F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F6AA80C-4441-4C41-A0EB-AED45205348E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F6AA80C-4441-4C41-A0EB-AED45205348E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F6AA80C-4441-4C41-A0EB-AED45205348E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F6AA80C-4441-4C41-A0EB-AED45205348E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1CE59EC-414C-415D-94F0-3D9541DF59B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1CE59EC-414C-415D-94F0-3D9541DF59B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1CE59EC-414C-415D-94F0-3D9541DF59B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1CE59EC-414C-415D-94F0-3D9541DF59B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
