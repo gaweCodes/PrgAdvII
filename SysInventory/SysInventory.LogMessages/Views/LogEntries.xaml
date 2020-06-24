@@ -35,6 +35,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -63,6 +65,7 @@
         <Button Content="Count" Command="{Binding CountItemsCommand}" Grid.Column="4" Grid.Row="17" />
         <Button Content="Show Locations" Command="{Binding OpenLocationWindowCommand}" Grid.Column="0" Grid.Row="19" Grid.ColumnSpan="5" />
         <Button Content="Show Customers" Command="{Binding OpenCustomersWindowCommand}" Grid.Column="0" Grid.Row="21" Grid.ColumnSpan="5" />
-        <Button Content="Information" Command="{Binding ShowInfoMessageCommand}" Grid.Column="0" Grid.Row="23" Grid.ColumnSpan="5" />
+        <Button Content="Load Exporters" Command="{Binding LoadAssembliesCommand}" Grid.Column="0" Grid.Row="23" Grid.ColumnSpan="5" />
+        <Button Content="Information" Command="{Binding ShowInfoMessageCommand}" Grid.Column="0" Grid.Row="25" Grid.ColumnSpan="5" />
     </Grid>
 </UserControl>

@@ -72,6 +72,7 @@
     <Compile Include="DataAccess\Ef\AddressRepository.cs" />
     <Compile Include="DataAccess\Ef\CustomerRepository.cs" />
     <Compile Include="MyRegExValidation.cs" />
+    <Compile Include="PluginLoader.cs" />
     <Compile Include="ViewModels\CustomersViewModel.cs" />
     <Compile Include="Views\AddLogEntryDialog.xaml.cs">
       <DependentUpon>AddLogEntryDialog.xaml</DependentUpon>
@@ -274,6 +275,10 @@
     <ProjectReference Include="..\DuplicateCheckerLib\DuplicateCheckerLib.csproj">
       <Project>{fff76215-025e-4386-91d5-b9ba5fc123ef}</Project>
       <Name>DuplicateCheckerLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PluginInterfaces\PluginInterfaces.csproj">
+      <Project>{8cc4bf07-3752-4b26-a4b6-b902a37aeef6}</Project>
+      <Name>PluginInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

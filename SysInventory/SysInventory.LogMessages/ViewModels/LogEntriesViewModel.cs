@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
@@ -12,11 +13,41 @@ namespace SysInventory.LogMessages.ViewModels
 {
     internal class LogEntriesViewModel : MasterDetailViewModel<ILogEntry, ILogEntry>
     {
+        private readonly PluginLoader _pluginLoader;
+        private string _connectionString;
+        private string _connectionStrategy;
+        public LogEntriesViewModel()
+        {
+            if (string.IsNullOrWhiteSpace(Settings.Default.ConnectionString))
+            {
+                Settings.Default.ConnectionString =
+                    "Data Source=EPICPCGAEBSTER;Initial Catalog=SysInventory;User ID=user;Password=pw";
+                Settings.Default.Save();
+            }
+            _pluginLoader = new PluginLoader();
+            ConnectionString = Settings.Default.ConnectionString;
+            ConnectionStrategy = "AdoNet";
+            DataRepository = Factory.GetLogEntryRepository(ConnectionStrategy);
+            LoadAssembliesCommand = new RelayCommand(LoadAllExporters);
+            ShowingItems = new ObservableCollection<ILogEntry>();
+            LoadFilteredItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
+            SaveCurrentItemCommand = new RelayCommand(ConfirmLogEntry, IsItemSelected);
+            LoadDetailsCommand = new RelayCommand(ShowLogEntryDetails, IsItemSelected);
+            DeleteItemCommand = new RelayCommand(DeleteLogEntry, IsItemSelected);
+            CreateItemCommand = new RelayCommand(OpenAddLogEntryDialog, CanConnectToDatabase);
+            FindDuplicateLogEntriesCommand = new RelayCommand(LoadDuplicateLogEntries, CanConnectToDatabase);
+            LoadAllItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
+            ShowInfoMessageCommand = new RelayCommand(ShowInfoMessage);
+            CountItemsCommand = new RelayCommand(CountItems, CanConnectToDatabase);
+            LoadFilteredItemsCommand = new RelayCommand(SearchItems, CanConnectToDatabase);
+            OpenLocationWindowCommand = new RelayCommand(OpenLocationWindow, CanConnectToDatabase);
+            OpenCustomersWindowCommand = new RelayCommand(OpenCustomersWindow, CanConnectToDatabase);
+        }
         public IRelayCommand FindDuplicateLogEntriesCommand { get; }
         public RelayCommand ShowInfoMessageCommand { get; }
         public RelayCommand OpenCustomersWindowCommand { get; }
         public RelayCommand OpenLocationWindowCommand { get; }
-        private string _connectionString;
+        public RelayCommand LoadAssembliesCommand { get; }
         public string ConnectionString
         {
             get => _connectionString;
@@ -31,30 +62,27 @@ namespace SysInventory.LogMessages.ViewModels
                 OpenLocationWindowCommand?.RaiseCanExecuteChanged();
             }
         }
-        public LogEntriesViewModel()
+        public string ConnectionStrategy
         {
-            if (string.IsNullOrWhiteSpace(Settings.Default.ConnectionString))
+            get => _connectionStrategy;
+            set
             {
-                Settings.Default.ConnectionString =
-                    "Data Source=EPICPCGAEBSTER;Initial Catalog=SysInventory;User ID=user;Password=pw";
-                Settings.Default.Save();
+                _connectionStrategy = value;
+                Strategy = value;
+                DataRepository = Factory.GetLogEntryRepository(value);
             }
-            ConnectionString = Settings.Default.ConnectionString;
-            ConnectionStrategy = "AdoNet";
-            DataRepository = Factory.GetLogEntryRepository(ConnectionStrategy);
-            ShowingItems = new ObservableCollection<ILogEntry>();
-            LoadFilteredItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
-            SaveCurrentItemCommand = new RelayCommand(ConfirmLogEntry, IsItemSelected);
-            LoadDetailsCommand = new RelayCommand(ShowLogEntryDetails, IsItemSelected);
-            DeleteItemCommand = new RelayCommand(DeleteLogEntry, IsItemSelected);
-            CreateItemCommand = new RelayCommand(OpenAddLogEntryDialog, CanConnectToDatabase);
-            FindDuplicateLogEntriesCommand = new RelayCommand(LoadDuplicateLogEntries, CanConnectToDatabase);
-            LoadAllItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
-            ShowInfoMessageCommand = new RelayCommand(ShowInfoMessage);
-            CountItemsCommand = new RelayCommand(CountItems, CanConnectToDatabase);
-            LoadFilteredItemsCommand = new RelayCommand(SearchItems, CanConnectToDatabase);
-            OpenLocationWindowCommand = new RelayCommand(OpenLocationWindow, CanConnectToDatabase);
-            OpenCustomersWindowCommand = new RelayCommand(OpenCustomersWindow, CanConnectToDatabase);
+        }
+        public void ShowInfoMessage() => MessageBox.Show(
+            $"Product: SysInventory {Environment.NewLine}Version: {Assembly.GetExecutingAssembly().GetName().Version} {Environment.NewLine}Author: Gabriel Weibel{Environment.NewLine}Support: admin@gaebster.ch");
+        protected void SearchItems()
+        {
+            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadUnconfirmedLogEntries();
+            else
+            {
+                PopulateShowingItemsList(ConnectionStrategy == "AdoNet"
+                    ? DataRepository.GetAll(WhereCriteria, ParseSearchValues())
+                    : DataRepository.GetAll(null));
+            }
         }
         private bool CanConnectToDatabase() => !string.IsNullOrWhiteSpace(ConnectionString);
         private void LoadUnconfirmedLogEntries()
@@ -102,8 +130,6 @@ namespace SysInventory.LogMessages.ViewModels
             Settings.Default.ConnectionString = ConnectionString;
             Settings.Default.Save();
         }
-        public void ShowInfoMessage() => MessageBox.Show(
-            $"Product: SysInventory {Environment.NewLine}Version: {Assembly.GetExecutingAssembly().GetName().Version} {Environment.NewLine}Author: Gabriel Weibel{Environment.NewLine}Support: admin@gaebster.ch");
         private void DeleteLogEntry()
         {
             DataRepository.Delete(SelectedItem);
@@ -119,26 +145,9 @@ namespace SysInventory.LogMessages.ViewModels
             UpdateSettings();
             new CustomersView().ShowDialog();
         }
-        protected virtual void SearchItems()
+        private void LoadAllExporters()
         {
-            if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadUnconfirmedLogEntries();
-            else
-            {
-                PopulateShowingItemsList(ConnectionStrategy == "AdoNet"
-                    ? DataRepository.GetAll(WhereCriteria, ParseSearchValues())
-                    : DataRepository.GetAll(null));
-            }
-        }
-        private string _connectionStrategy;
-        public string ConnectionStrategy
-        {
-            get => _connectionStrategy;
-            set
-            {
-                _connectionStrategy = value;
-                Strategy = value;
-                DataRepository = Factory.GetLogEntryRepository(value);
-            }
+            _pluginLoader.ExportData(_pluginLoader.LoadExporters(), new List<int> {1,2,3}, @".\output");
         }
     }
 }
