@@ -1,12 +1,12 @@
-﻿using PluginInterface;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security;
+using PluginInterface;
 
-namespace Reflection2 
+namespace Reflection.Reflection2 
 {
     internal static class Program 
     {
