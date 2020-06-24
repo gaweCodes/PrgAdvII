@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security;
-using PluginInterface;
+using Reflection.PluginInterface;
 
 namespace Reflection.Reflection2 
 {
