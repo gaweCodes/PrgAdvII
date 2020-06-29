@@ -14,7 +14,8 @@ namespace Reflection.Reflection2
         {
             var files = Directory.GetFiles(@".\plugins\", "*.dll");
 
-            foreach (var file in files.Select(Path.GetFullPath)) {
+            foreach (var file in files.Select(Path.GetFullPath)) 
+            {
                 try 
                 {
                     var assembly = Assembly.LoadFile(file);
