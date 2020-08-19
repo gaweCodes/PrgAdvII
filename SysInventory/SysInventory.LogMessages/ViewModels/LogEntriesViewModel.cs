@@ -16,6 +16,7 @@ namespace SysInventory.LogMessages.ViewModels
         private readonly PluginLoader _pluginLoader;
         private string _connectionString;
         private string _connectionStrategy;
+        public RelayCommand OpenWindowFunctionCommand { get; }
         public LogEntriesViewModel()
         {
             if (string.IsNullOrWhiteSpace(Settings.Default.ConnectionString))
@@ -42,6 +43,7 @@ namespace SysInventory.LogMessages.ViewModels
             LoadFilteredItemsCommand = new RelayCommand(SearchItems, CanConnectToDatabase);
             OpenLocationWindowCommand = new RelayCommand(OpenLocationWindow, CanConnectToDatabase);
             OpenCustomersWindowCommand = new RelayCommand(OpenCustomersWindow, CanConnectToDatabase);
+            OpenWindowFunctionCommand = new RelayCommand(OpenWindowFunctionWindow, CanConnectToDatabase);
         }
         public IRelayCommand FindDuplicateLogEntriesCommand { get; }
         public RelayCommand ShowInfoMessageCommand { get; }
@@ -144,6 +146,11 @@ namespace SysInventory.LogMessages.ViewModels
         {
             UpdateSettings();
             new CustomersView().ShowDialog();
+        }
+        private void OpenWindowFunctionWindow()
+        {
+            UpdateSettings();
+            new WindowFunction().ShowDialog();
         }
         private void LoadAllExporters()
         {

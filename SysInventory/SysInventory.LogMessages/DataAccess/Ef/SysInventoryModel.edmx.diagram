@@ -23,6 +23,7 @@
         <AssociationConnector Association="SysInventoryModel.ContactPerson_Address" />
         <AssociationConnector Association="SysInventoryModel.ContactPerson_AddressType" />
         <AssociationConnector Association="SysInventoryModel.PhoneNumber_ContactPerson" />
+        <EntityTypeShape EntityType="SysInventoryModel.WindowFunction" Width="2.125" PointX="7.75" PointY="2.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

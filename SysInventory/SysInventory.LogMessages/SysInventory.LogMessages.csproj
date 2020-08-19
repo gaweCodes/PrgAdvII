@@ -71,9 +71,14 @@
     </Compile>
     <Compile Include="DataAccess\Ef\AddressRepository.cs" />
     <Compile Include="DataAccess\Ef\CustomerRepository.cs" />
+    <Compile Include="DataAccess\Ef\WindowFunction.cs">
+      <DependentUpon>SysInventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\Ef\WindowFunctionsRepository.cs" />
     <Compile Include="MyRegExValidation.cs" />
     <Compile Include="PluginLoader.cs" />
     <Compile Include="ViewModels\CustomersViewModel.cs" />
+    <Compile Include="ViewModels\WindowFunctionViewModel.cs" />
     <Compile Include="Views\AddLogEntryDialog.xaml.cs">
       <DependentUpon>AddLogEntryDialog.xaml</DependentUpon>
     </Compile>
@@ -178,6 +183,9 @@
     <Compile Include="Views\PhoneNumberTypes.xaml.cs">
       <DependentUpon>PhoneNumberTypes.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\WindowFunction.xaml.cs">
+      <DependentUpon>WindowFunction.xaml</DependentUpon>
+    </Compile>
     <Page Include="Views\AddLogEntryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -229,6 +237,10 @@
     <Page Include="Views\PhoneNumberTypes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WindowFunction.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

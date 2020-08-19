@@ -117,6 +117,27 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
           <Property Name="timestamp" Type="datetime" Nullable="false" />
           <Property Name="Message" Type="varchar(max)" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SysInventory.dbo.WindowFunctions' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="WindowFunctions">
+          <Key>
+            <PropertyRef Name="Category" />
+          </Key>
+          <Property Name="Category" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="YOY" Type="nvarchar" MaxLength="31" />
+          <Property Name="2020-Q4" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2020-Q3" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2020-Q2" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2020-Q1" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2019-Q4" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2019-Q3" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2019-Q2" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2019-Q1" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2018-Q4" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2018-Q3" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2018-Q2" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="2018-Q1" Type="decimal" Precision="38" Scale="2" />
+        </EntityType>
         <Association Name="Address_City">
           <End Role="City" Type="Self.City" Multiplicity="1" />
           <End Role="Address" Type="Self.Address" Multiplicity="*" />
@@ -242,6 +263,24 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
     [v_logentries].[timestamp] AS [timestamp], 
     [v_logentries].[Message] AS [Message]
     FROM [dbo].[v_logentries] AS [v_logentries]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="WindowFunctions" EntityType="Self.WindowFunctions" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [WindowFunctions].[Category] AS [Category], 
+    [WindowFunctions].[YOY] AS [YOY], 
+    [WindowFunctions].[2020-Q4] AS [2020-Q4], 
+    [WindowFunctions].[2020-Q3] AS [2020-Q3], 
+    [WindowFunctions].[2020-Q2] AS [2020-Q2], 
+    [WindowFunctions].[2020-Q1] AS [2020-Q1], 
+    [WindowFunctions].[2019-Q4] AS [2019-Q4], 
+    [WindowFunctions].[2019-Q3] AS [2019-Q3], 
+    [WindowFunctions].[2019-Q2] AS [2019-Q2], 
+    [WindowFunctions].[2019-Q1] AS [2019-Q1], 
+    [WindowFunctions].[2018-Q4] AS [2018-Q4], 
+    [WindowFunctions].[2018-Q3] AS [2018-Q3], 
+    [WindowFunctions].[2018-Q2] AS [2018-Q2], 
+    [WindowFunctions].[2018-Q1] AS [2018-Q1]
+    FROM [dbo].[WindowFunctions] AS [WindowFunctions]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="Address_City" Association="Self.Address_City">
             <End Role="City" EntitySet="City" />
@@ -373,6 +412,7 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
             <End Role="ContactPerson" EntitySet="ContactPersons" />
             <End Role="PhoneNumber" EntitySet="PhoneNumbers" />
           </AssociationSet>
+          <EntitySet Name="WindowFunctions" EntityType="SysInventoryModel.WindowFunction" />
         </EntityContainer>
         <EntityType Name="LogEf">
           <Key>
@@ -555,6 +595,25 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="WindowFunction">
+          <Key>
+            <PropertyRef Name="Category" />
+          </Key>
+          <Property Name="Category" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="YOY" Type="String" MaxLength="31" FixedLength="false" Unicode="true" />
+          <Property Name="C2020_Q4" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2020_Q3" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2020_Q2" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2020_Q1" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2019_Q4" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2019_Q3" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2019_Q2" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2019_Q1" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2018_Q4" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2018_Q3" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2018_Q2" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="C2018_Q1" Type="Decimal" Precision="38" Scale="2" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -674,6 +733,26 @@ warning 6002: The table/view 'SysInventory.dbo.v_logentries' does not have a pri
                 <ScalarProperty Name="Firstname" ColumnName="Firstname" />
                 <ScalarProperty Name="Salutation" ColumnName="Salutation" />
                 <ScalarProperty Name="Id" ColumnName="ContactPersonId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WindowFunctions">
+            <EntityTypeMapping TypeName="SysInventoryModel.WindowFunction">
+              <MappingFragment StoreEntitySet="WindowFunctions">
+                <ScalarProperty Name="C2018_Q1" ColumnName="2018-Q1" />
+                <ScalarProperty Name="C2018_Q2" ColumnName="2018-Q2" />
+                <ScalarProperty Name="C2018_Q3" ColumnName="2018-Q3" />
+                <ScalarProperty Name="C2018_Q4" ColumnName="2018-Q4" />
+                <ScalarProperty Name="C2019_Q1" ColumnName="2019-Q1" />
+                <ScalarProperty Name="C2019_Q2" ColumnName="2019-Q2" />
+                <ScalarProperty Name="C2019_Q3" ColumnName="2019-Q3" />
+                <ScalarProperty Name="C2019_Q4" ColumnName="2019-Q4" />
+                <ScalarProperty Name="C2020_Q1" ColumnName="2020-Q1" />
+                <ScalarProperty Name="C2020_Q2" ColumnName="2020-Q2" />
+                <ScalarProperty Name="C2020_Q3" ColumnName="2020-Q3" />
+                <ScalarProperty Name="C2020_Q4" ColumnName="2020-Q4" />
+                <ScalarProperty Name="YOY" ColumnName="YOY" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

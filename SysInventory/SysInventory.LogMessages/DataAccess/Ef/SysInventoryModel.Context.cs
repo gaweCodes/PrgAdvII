@@ -37,6 +37,7 @@ namespace SysInventory.LogMessages.DataAccess.Ef
         public virtual DbSet<PhoneType> PhoneTypes { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<ContactPerson> ContactPersons { get; set; }
+        public virtual DbSet<WindowFunction> WindowFunctions { get; set; }
     
         public virtual int LogClear(Nullable<System.Guid> id)
         {
