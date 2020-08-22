@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<CarRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Model="2015" xmlns="http://serialization">
+  <CarType>Chev</CarType>
+  <WheelItems xmlns="http://serialization.array">
+    <Wheel>
+      <Type>Bridgestone</Type>
+    </Wheel>
+    <Wheel>
+      <Type>Bridgestone</Type>
+    </Wheel>
+  </WheelItems>
+  <Radio Model="2015">Sony</Radio>
+</CarRoot>

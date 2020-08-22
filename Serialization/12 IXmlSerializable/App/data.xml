@@ -1,0 +1,1 @@
+<Car IsHatchback="False" xmlns="http://schemas.datacontract.org/2004/07/App"><Info Model="2015"><Type>Chev</Type><Price>20000</Price></Info><Wheels><Wheel Id="1">Bridgestone</Wheel><Wheel Id="2">Bridgestone</Wheel></Wheels></Car>
