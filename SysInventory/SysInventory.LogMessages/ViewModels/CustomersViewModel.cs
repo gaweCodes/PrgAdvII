@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
+using SysInventory.LogMessages.DataAccess;
 using SysInventory.LogMessages.DataAccess.Ef;
 
 namespace SysInventory.LogMessages.ViewModels
@@ -12,20 +13,24 @@ namespace SysInventory.LogMessages.ViewModels
     internal class CustomersViewModel : MasterDetailViewModel<Customer, Customer>, INotifyPropertyChanged
     {
         private readonly MyRegExValidations _regExValidation = new MyRegExValidations();
+        private IRepositoryBase<AddressType> _addressTypeRepo;
+        private IRepositoryBase<Address> _addressRepo;
         public string CustomerNoSearchParam { get; set; }
         public string NameSearchParam { get; set; }
         public string MailSearchParam { get; set; }
         public RelayCommand SearchCommand { get; }
         public ObservableCollection<Address> Addresses { get; }
         public ObservableCollection<AddressType> AddressTypes { get; }
-        public CustomersViewModel()
+        public CustomersViewModel(IRepositoryBase<Customer> repo, IRepositoryBase<AddressType> addressTypeRepo, IRepositoryBase<Address> addressRepo)
         {
             ShowingItems = new ObservableCollection<Customer>();
             Addresses = new ObservableCollection<Address>();
             AddressTypes = new ObservableCollection<AddressType>();
             SearchCommand = new RelayCommand(SearchCustomers);
             LoadDetailsCommand = new RelayCommand<Customer>(LoadDetails);
-            DataRepository = new CustomerRepository();
+            DataRepository = repo;
+            _addressTypeRepo = addressTypeRepo;
+            _addressRepo = addressRepo;
             SaveCurrentItemCommand = new RelayCommand(SaveCurrentCustomer, IsItemSelected);
             CreateItemCommand = new RelayCommand(CreateEmptyCustomer);
             DeleteItemCommand = new RelayCommand(DeleteCustomer, IsItemSelected);
@@ -62,18 +67,16 @@ namespace SysInventory.LogMessages.ViewModels
         private void LoadAddresses()
         {
             if (SelectedItem == null) return;
-            var addressRepo = new AddressRepository();
             Addresses.Clear();
-            foreach (var address in addressRepo.GetAll()) Addresses.Add(address);
-            SelectedItem.Address = addressRepo.GetSingle(SelectedItem.AddressFk);
+            foreach (var address in _addressRepo.GetAll()) Addresses.Add(address);
+            SelectedItem.Address = _addressRepo.GetSingle(SelectedItem.AddressFk);
         }
         private void LoadAddressTypes()
         {
             if(SelectedItem == null) return;
-            var addressTypeRepo = new AddressTypeRepository();
             AddressTypes.Clear();
-            foreach (var addresstype in addressTypeRepo.GetAll()) AddressTypes.Add(addresstype);
-            SelectedItem.AddressType = addressTypeRepo.GetSingle(SelectedItem.AddressTypeFk);
+            foreach (var addresstype in _addressTypeRepo.GetAll()) AddressTypes.Add(addresstype);
+            SelectedItem.AddressType = _addressTypeRepo.GetSingle(SelectedItem.AddressTypeFk);
         }
         private void SaveCurrentCustomer()
         {

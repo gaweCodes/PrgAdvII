@@ -5,8 +5,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Windows;
+using SysInventory.LogMessages.DataAccess;
 using SysInventory.LogMessages.Extensions;
 using SysInventory.LogMessages.Models;
+using IContainer = Autofac.IContainer;
 
 namespace SysInventory.LogMessages.ViewModels
 {
@@ -19,16 +21,26 @@ namespace SysInventory.LogMessages.ViewModels
             set
             {
                 _connectionStrategy = value;
-                this.Strategy = value;
+                Strategy = value;
                 DataRepository = Factory.GetLocationRepository(value);
                 LoadLocationsTree();
             }
         }
-        public LocationsViewModel()
+        private IContainer _container;
+        public IContainer Container
+        {
+            private get { return _container; }
+            set
+            {
+                _container = value;
+                Factory = new RepositoryFactory(Container);
+                ConnectionStrategy = "AdoNet";
+            }
+        }
+        public LocationsViewModel(IRepositoryBase<ILocation> repo)
         {
             ShowingItems = new ObservableCollection<LocationTreeViewitem>();
-            ConnectionStrategy = "AdoNet";
-            DataRepository = Factory.GetLocationRepository(ConnectionStrategy);
+            DataRepository = repo;
             LoadFilteredItemsCommand = new RelayCommand(SearchItems);
             LoadAllItemsCommand = new RelayCommand(LoadLocationsTree);
             LoadDetailsCommand = new RelayCommand<LocationTreeViewitem>(ShowLocationDetails);
@@ -82,7 +94,7 @@ namespace SysInventory.LogMessages.ViewModels
             else
             {
                 IQueryable<ILocation> foundEntries;
-                if(Strategy == "AdoNet")
+                if(ConnectionStrategy == "AdoNet")
                     foundEntries = DataRepository.GetAll(WhereCriteria, ParseSearchValues());
                 else
                 {

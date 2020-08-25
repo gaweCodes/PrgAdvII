@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using Autofac;
 using DuplicateCheckerLib;
+using SysInventory.LogMessages.DataAccess;
 using SysInventory.LogMessages.Models;
 using SysInventory.LogMessages.Properties;
 using SysInventory.LogMessages.Views;
@@ -16,8 +18,19 @@ namespace SysInventory.LogMessages.ViewModels
         private readonly PluginLoader _pluginLoader;
         private string _connectionString;
         private string _connectionStrategy;
+        private IContainer _container;
         public RelayCommand OpenWindowFunctionCommand { get; }
-        public LogEntriesViewModel()
+        public IContainer Container
+        {
+            private get { return _container; }
+            set
+            {
+                _container = value;
+                Factory = new RepositoryFactory(value);
+                ConnectionStrategy = "AdoNet";
+            }
+        }
+        public LogEntriesViewModel(IRepositoryBase<ILogEntry> repo)
         {
             if (string.IsNullOrWhiteSpace(Settings.Default.ConnectionString))
             {
@@ -27,8 +40,7 @@ namespace SysInventory.LogMessages.ViewModels
             }
             _pluginLoader = new PluginLoader();
             ConnectionString = Settings.Default.ConnectionString;
-            ConnectionStrategy = "AdoNet";
-            DataRepository = Factory.GetLogEntryRepository(ConnectionStrategy);
+            DataRepository = repo;
             LoadAssembliesCommand = new RelayCommand(LoadAllExporters);
             ShowingItems = new ObservableCollection<ILogEntry>();
             LoadFilteredItemsCommand = new RelayCommand(LoadUnconfirmedLogEntries, CanConnectToDatabase);
@@ -116,7 +128,7 @@ namespace SysInventory.LogMessages.ViewModels
         private void OpenAddLogEntryDialog()
         {
             UpdateSettings();
-            new AddLogEntryDialog().ShowDialog();
+            new AddLogEntryDialog(Container).ShowDialog();
             LoadUnconfirmedLogEntries();
         }
         private void LoadDuplicateLogEntries()
@@ -140,17 +152,17 @@ namespace SysInventory.LogMessages.ViewModels
         private void OpenLocationWindow()
         {
             UpdateSettings();
-            new Locations().ShowDialog();
+            new Locations(Container).ShowDialog();
         }
         private void OpenCustomersWindow()
         {
             UpdateSettings();
-            new CustomersView().ShowDialog();
+            new CustomersView(Container).ShowDialog();
         }
         private void OpenWindowFunctionWindow()
         {
             UpdateSettings();
-            new WindowFunction().ShowDialog();
+            new WindowFunction(Container).ShowDialog();
         }
         private void LoadAllExporters()
         {

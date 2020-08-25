@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using Autofac;
+using SysInventory.LogMessages.DataAccess;
 using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
@@ -14,6 +16,17 @@ namespace SysInventory.LogMessages.ViewModels
             {
                 _connectionStrategy = value;
                 DataRepository = Factory.GetLogEntryRepository(value);
+            }
+        }
+        private IContainer _container;
+        public IContainer Container
+        {
+            private get { return _container; }
+            set
+            {
+                _container = value;
+                Factory = new RepositoryFactory(Container);
+                ConnectionStrategy = "AdoNet";
             }
         }
         private string _pod;
@@ -57,12 +70,11 @@ namespace SysInventory.LogMessages.ViewModels
             }
         }
         public RelayCommand<Window> CancelCommand { get; }
-        public AddLogEntryViewModel()
+        public AddLogEntryViewModel(IRepositoryBase<ILogEntry> repo)
         {
-            ConnectionStrategy = "AdoNet";
             SaveCurrentItemCommand = new RelayCommand<Window>(Save, CanSave);
             CancelCommand = new RelayCommand<Window>(Cancel);
-            DataRepository = Factory.GetLogEntryRepository(ConnectionStrategy);
+            DataRepository = repo;
         }
         private void Save(Window windowToClose)
         {

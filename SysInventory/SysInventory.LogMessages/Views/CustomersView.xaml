@@ -4,12 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:SysInventory.LogMessages.ViewModels"
         mc:Ignorable="d"
         Title="Customers" Height="600" Width="900" Margin="10">
-    <Window.DataContext>
-        <viewModels:CustomersViewModel />
-    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

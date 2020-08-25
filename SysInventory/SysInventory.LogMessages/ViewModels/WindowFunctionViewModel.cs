@@ -10,10 +10,10 @@ namespace SysInventory.LogMessages.ViewModels
         public RelayCommand LoadWindowFunctionResultsCommand { get; }
         public ObservableCollection<WindowFunction> ShowingItems { get; set; }
         private readonly IRepositoryBase<WindowFunction> _dataRepository;
-        public WindowFunctionViewModel()
+        public WindowFunctionViewModel(IRepositoryBase<WindowFunction> repo)
         {
             ShowingItems = new ObservableCollection<WindowFunction>();
-            _dataRepository = new WindowRepository();
+            _dataRepository = repo;
             LoadWindowFunctionResultsCommand = new RelayCommand(LoadWindowFunctionResults);
         }
         private void LoadWindowFunctionResults()

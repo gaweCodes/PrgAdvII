@@ -35,18 +35,31 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=5.2.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.5.2.0\lib\net461\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,11 +83,12 @@
       <DependentUpon>SysInventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\Ef\AddressRepository.cs" />
+    <Compile Include="DataAccess\Ef\WindowFunctionsRepository.cs" />
     <Compile Include="DataAccess\Ef\CustomerRepository.cs" />
     <Compile Include="DataAccess\Ef\WindowFunction.cs">
       <DependentUpon>SysInventoryModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataAccess\Ef\WindowFunctionsRepository.cs" />
+    <Compile Include="IoCContainer.cs" />
     <Compile Include="MyRegExValidation.cs" />
     <Compile Include="PluginLoader.cs" />
     <Compile Include="ViewModels\CustomersViewModel.cs" />
@@ -138,24 +152,6 @@
     </Compile>
     <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="IRelayCommand.cs" />
-    <Compile Include="Views\AddressDetail.xaml.cs">
-      <DependentUpon>AddressDetail.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Addresses.xaml.cs">
-      <DependentUpon>Addresses.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\AddressTypes.xaml.cs">
-      <DependentUpon>AddressTypes.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Cities.xaml.cs">
-      <DependentUpon>Cities.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ContactPersonDetail.xaml.cs">
-      <DependentUpon>ContactPersonDetail.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ContactPersons.xaml.cs">
-      <DependentUpon>ContactPersons.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\CustomersView.xaml.cs">
       <DependentUpon>CustomersView.xaml</DependentUpon>
     </Compile>
@@ -177,40 +173,10 @@
     <Compile Include="ViewModels\LocationsViewModel.cs" />
     <Compile Include="ViewModels\LogEntriesViewModel.cs" />
     <Compile Include="ViewModels\MasterDetailViewModel.cs" />
-    <Compile Include="Views\PhoneNumbers.xaml.cs">
-      <DependentUpon>PhoneNumbers.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PhoneNumberTypes.xaml.cs">
-      <DependentUpon>PhoneNumberTypes.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\WindowFunction.xaml.cs">
       <DependentUpon>WindowFunction.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\AddLogEntryDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\AddressDetail.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Addresses.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\AddressTypes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Cities.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ContactPersonDetail.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ContactPersons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -230,17 +196,9 @@
       <DependentUpon>LogEntries.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\PhoneNumbers.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PhoneNumberTypes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\WindowFunction.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
