@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace SysInventory.LogMessages.DataAccess
 {
-    internal interface IRepositoryBase<T>
+    public interface IRepositoryBase<T>
     {
         /// <summary>
         /// Adds a model object to the database

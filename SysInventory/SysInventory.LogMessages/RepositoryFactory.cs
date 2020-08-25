@@ -5,7 +5,7 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages
 {
-    internal class RepositoryFactory
+    public class RepositoryFactory
     {
         private readonly IContainer _container;
         public RepositoryFactory(IContainer container)

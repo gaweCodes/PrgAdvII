@@ -13,7 +13,7 @@ using SysInventory.LogMessages.Views;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class LogEntriesViewModel : MasterDetailViewModel<ILogEntry, ILogEntry>
+    public class LogEntriesViewModel : MasterDetailViewModel<ILogEntry, ILogEntry>
     {
         private readonly PluginLoader _pluginLoader;
         private string _connectionString;
@@ -88,7 +88,7 @@ namespace SysInventory.LogMessages.ViewModels
         }
         public void ShowInfoMessage() => MessageBox.Show(
             $"Product: SysInventory {Environment.NewLine}Version: {Assembly.GetExecutingAssembly().GetName().Version} {Environment.NewLine}Author: Gabriel Weibel{Environment.NewLine}Support: admin@gaebster.ch");
-        protected void SearchItems()
+        public void SearchItems()
         {
             if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadUnconfirmedLogEntries();
             else
@@ -99,7 +99,7 @@ namespace SysInventory.LogMessages.ViewModels
             }
         }
         private bool CanConnectToDatabase() => !string.IsNullOrWhiteSpace(ConnectionString);
-        private void LoadUnconfirmedLogEntries()
+        public void LoadUnconfirmedLogEntries()
         {
             try
             {

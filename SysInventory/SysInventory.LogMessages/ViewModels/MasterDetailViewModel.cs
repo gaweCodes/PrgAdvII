@@ -10,7 +10,7 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal abstract class MasterDetailViewModel<T, TCollection> : BaseViewModel<T> where T : IIdentifiable
+    public abstract class MasterDetailViewModel<T, TCollection> : BaseViewModel<T> where T : IIdentifiable
     {
         private T _selectedItem;
         protected string Strategy;
