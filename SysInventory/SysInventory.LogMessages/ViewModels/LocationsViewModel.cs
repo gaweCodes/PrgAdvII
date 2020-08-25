@@ -12,7 +12,7 @@ using IContainer = Autofac.IContainer;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class LocationsViewModel : MasterDetailViewModel<ILocation, LocationTreeViewitem>, INotifyPropertyChanged
+    public class LocationsViewModel : MasterDetailViewModel<ILocation, LocationTreeViewitem>, INotifyPropertyChanged
     {
         private string _connectionStrategy;
         public string ConnectionStrategy
@@ -49,7 +49,7 @@ namespace SysInventory.LogMessages.ViewModels
             SaveCurrentItemCommand = new RelayCommand(SaveCurrentLocation, IsItemSelected);
             DeleteItemCommand = new RelayCommand(DeleteSelectedLocation, IsItemSelected);
         }
-        private void LoadLocationsTree()
+        public void LoadLocationsTree()
         {
             try
             {
@@ -75,7 +75,7 @@ namespace SysInventory.LogMessages.ViewModels
             if (selectedItem?.Item == null || selectedItem.Item.Id == Guid.Empty) return;
             SelectedItem = GetSingleEntry(selectedItem.Item.Id);
         }
-        private void SaveCurrentLocation()
+        public void SaveCurrentLocation()
         {
             if (string.IsNullOrWhiteSpace(SelectedItem.Name) || SelectedItem.PoDId == Guid.Empty)
             {
@@ -88,7 +88,7 @@ namespace SysInventory.LogMessages.ViewModels
             SelectedItem = null;
         }
         private void CreateNewLocation() => SelectedItem = new Location {ParentId = SelectedItem?.Id};
-        private void SearchItems()
+        public void SearchItems()
         {
             if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) LoadLocationsTree();
             else

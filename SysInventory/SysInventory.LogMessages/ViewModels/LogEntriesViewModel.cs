@@ -113,7 +113,7 @@ namespace SysInventory.LogMessages.ViewModels
             }
         }
         private void ShowLogEntryDetails() => MessageBox.Show(GetSingleEntry(SelectedItem.Id).ToString());
-        private void ConfirmLogEntry()
+        public void ConfirmLogEntry()
         {
             try
             {

@@ -13,7 +13,7 @@ namespace SysInventory.LogMessages.ViewModels
     public abstract class MasterDetailViewModel<T, TCollection> : BaseViewModel<T> where T : IIdentifiable
     {
         private T _selectedItem;
-        protected string Strategy;
+        public string Strategy;
         public event PropertyChangedEventHandler PropertyChanged;
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
@@ -56,8 +56,8 @@ namespace SysInventory.LogMessages.ViewModels
             ShowingItems.Clear();
             foreach (var itemm in listToAdd) ShowingItems.Add(itemm);
         }
-        protected T GetSingleEntry(Guid id) => DataRepository.GetSingle(id);
-        protected void CountItems()
+        public T GetSingleEntry(Guid id) => DataRepository.GetSingle(id);
+        public void CountItems()
         {
             if (string.IsNullOrEmpty(WhereCriteria) || string.IsNullOrEmpty(ParameterValues)) MessageBox.Show($"found {DataRepository.Count()} entries");
             else

@@ -6,7 +6,7 @@ using SysInventory.LogMessages.Models;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class AddLogEntryViewModel : BaseViewModel<ILogEntry>
+    public class AddLogEntryViewModel : BaseViewModel<ILogEntry>
     {
         private string _connectionStrategy;
         public string ConnectionStrategy
@@ -76,12 +76,16 @@ namespace SysInventory.LogMessages.ViewModels
             CancelCommand = new RelayCommand<Window>(Cancel);
             DataRepository = repo;
         }
+        public void CreateNewItem()
+        {
+            DataRepository.Add(new LogEntry
+                { PoD = PoD, Message = Message, Severity = Severity, Hostname = Hostname });
+        }
         private void Save(Window windowToClose)
         {
             try
             {
-                DataRepository.Add(new LogEntry
-                    {PoD = PoD, Message = Message, Severity = Severity, Hostname = Hostname});
+                CreateNewItem();
                 Cancel(windowToClose);
             }
             catch (Exception e)
