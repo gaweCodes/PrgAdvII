@@ -1,0 +1,49 @@
+// CalculatorSvr.idl : IDL source for CalculatorSvr
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (CalculatorSvr.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(AF41A15F-FBD4-4807-A259-6B6089FE76A4),
+	oleautomation,
+	nonextensible,
+	pointer_default(unique)
+]
+interface ITrigCalculator : IUnknown {
+	[id(1)] HRESULT Sin([in] double angle, [out, retval] double* result);
+	[propget] HRESULT Degrees([out, retval] VARIANT_BOOL* pVal);
+	[propput] HRESULT Degrees([in] VARIANT_BOOL newVal);
+};
+
+[
+	object,
+	uuid(AF4978FE-6C37-4D20-84E5-A3FF319DFDE9),
+	oleautomation,
+	nonextensible,
+	pointer_default(unique)
+]
+interface ISimpleCalculator : IUnknown{
+	[id(1)] HRESULT Add([in] int a, [in] int b, [out, retval] int* result);
+};
+[
+	uuid(3FCF7C29-8229-4DEC-B18C-9A769109A88E),
+	version(1.0),
+]
+library CalculatorSvrLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(9017AC43-C0D1-49CE-8156-A37E0712100B)		
+	]
+	coclass Calculator
+	{
+		[default] interface ISimpleCalculator;
+		interface ITrigCalculator;
+	};
+};
+

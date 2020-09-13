@@ -1,0 +1,15 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {9017AC43-C0D1-49CE-8156-A37E0712100B} = s 'Calculator Class'
+		{
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{3FCF7C29-8229-4DEC-B18C-9A769109A88E}'
+			Version = s '1.0'
+		}
+	}
+}

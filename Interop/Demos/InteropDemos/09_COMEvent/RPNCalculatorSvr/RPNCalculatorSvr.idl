@@ -1,0 +1,47 @@
+// RPNCalculatorSvr.idl : IDL source for RPNCalculatorSvr
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (RPNCalculatorSvr.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(AE7CC251-1F28-49D3-A5E9-12035F491874),
+	oleautomation,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IRPNCalculator : IUnknown {
+	[id(1)] HRESULT Push([in] double value);
+	[id(2)] HRESULT Pop([out, retval] double* value);
+	[id(3)] HRESULT Add();
+	[id(4)] HRESULT Mul();
+};
+[
+	uuid(38691C47-D062-4F62-9B93-6E3F947096BC),
+	version(1.0),
+]
+library RPNCalculatorSvrLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(040E0579-4276-471C-A4F1-DFF83C941D77)
+	]
+	dispinterface _IRPNCalculatorEvents
+	{
+	properties:
+	methods:
+		[id(1)] void StackEmpty();
+	};
+	[
+		uuid(FB62202B-8F01-4844-88D9-15DDC368A17F)
+	]
+	coclass RPNCalculator {
+		[default] interface IRPNCalculator;
+		[default, source] dispinterface _IRPNCalculatorEvents;
+	};
+};
+
