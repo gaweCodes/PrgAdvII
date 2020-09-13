@@ -125,5 +125,26 @@ namespace SysInventory.Test
                 mock.Mock<IRepositoryBase<ILocation>>().Verify(x => x.Update(itemToUpdate), Times.Exactly(1));
             }
         }
+        [Test]
+        public void LocationsViewModel_Delete_CallsDeleteOnce()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                var id = Guid.NewGuid();
+                var itemToDelete = new Location
+                {
+                    Id = id,
+                    PoDId = Guid.NewGuid(),
+                    Name = "asdf"
+                };
+                mock.Mock<IRepositoryBase<ILocation>>().Setup(x => x.Delete(itemToDelete));
+                var sut = mock.Create<LocationsViewModel>();
+
+                sut.SelectedItem = itemToDelete;
+                sut.DeleteSelectedLocation();
+
+                mock.Mock<IRepositoryBase<ILocation>>().Verify(x => x.Delete(itemToDelete), Times.Exactly(1));
+            }
+        }
     }
 }

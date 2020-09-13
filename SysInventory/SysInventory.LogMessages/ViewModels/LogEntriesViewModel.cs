@@ -144,7 +144,7 @@ namespace SysInventory.LogMessages.ViewModels
             Settings.Default.ConnectionString = ConnectionString;
             Settings.Default.Save();
         }
-        private void DeleteLogEntry()
+        public void DeleteLogEntry()
         {
             DataRepository.Delete(SelectedItem);
             LoadUnconfirmedLogEntries();

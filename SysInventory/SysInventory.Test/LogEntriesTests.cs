@@ -160,5 +160,30 @@ namespace SysInventory.Test
                 mock.Mock<IRepositoryBase<ILogEntry>>().Verify(x => x.Update(itemToUpdate), Times.Exactly(1));
             }
         }
+        [Test]
+        public void LogEntriesViewModel_Delete_CallsDeleteOnce()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                var id = Guid.NewGuid();
+                var itemToDelete = new LogEntry
+                {
+                    Id = id,
+                    Message = "adsf",
+                    Hostname = "asdf",
+                    Location = "asdf",
+                    PoD = "sdf",
+                    Severity = 1,
+                    Timestamp = DateTime.Now
+                };
+                mock.Mock<IRepositoryBase<ILogEntry>>().Setup(x => x.Delete(itemToDelete));
+                var sut = mock.Create<LogEntriesViewModel>();
+
+                sut.SelectedItem = itemToDelete;
+                sut.DeleteLogEntry();
+
+                mock.Mock<IRepositoryBase<ILogEntry>>().Verify(x => x.Delete(itemToDelete), Times.Exactly(1));
+            }
+        }
     }
 }

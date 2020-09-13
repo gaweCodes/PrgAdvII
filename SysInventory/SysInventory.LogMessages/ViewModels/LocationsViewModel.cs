@@ -107,7 +107,7 @@ namespace SysInventory.LogMessages.ViewModels
                 MessageBox.Show(messageText);
             }
         }
-        private void DeleteSelectedLocation()
+        public void DeleteSelectedLocation()
         {
             DataRepository.Delete(SelectedItem);
             LoadLocationsTree();

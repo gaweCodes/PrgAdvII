@@ -85,6 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomerTests.cs" />
     <Compile Include="LocationTests.cs" />
     <Compile Include="LogEntriesTests.cs" />
     <Compile Include="RegexTests.cs" />

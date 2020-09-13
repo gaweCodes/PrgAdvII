@@ -10,7 +10,7 @@ using SysInventory.LogMessages.DataAccess.Ef;
 
 namespace SysInventory.LogMessages.ViewModels
 {
-    internal class CustomersViewModel : MasterDetailViewModel<Customer, Customer>, INotifyPropertyChanged
+    public class CustomersViewModel : MasterDetailViewModel<Customer, Customer>, INotifyPropertyChanged
     {
         private readonly MyRegExValidations _regExValidation = new MyRegExValidations();
         private IRepositoryBase<AddressType> _addressTypeRepo;
@@ -36,7 +36,7 @@ namespace SysInventory.LogMessages.ViewModels
             DeleteItemCommand = new RelayCommand(DeleteCustomer, IsItemSelected);
             LoadAllCustomers();
         }
-        private void SearchCustomers()
+        public void SearchCustomers()
         {
             Expression<Func<Customer, bool>> whereExpression = null;
             if (!string.IsNullOrWhiteSpace(CustomerNoSearchParam))
@@ -53,7 +53,7 @@ namespace SysInventory.LogMessages.ViewModels
             var filteredCustomers = DataRepository.GetAll(whereExpression);
             PopulateShowingItemsList(filteredCustomers);
         }
-        private void LoadAllCustomers()
+        public void LoadAllCustomers()
         {
             var customers = DataRepository.GetAll();
             PopulateShowingItemsList(customers);
@@ -78,7 +78,7 @@ namespace SysInventory.LogMessages.ViewModels
             foreach (var addresstype in _addressTypeRepo.GetAll()) AddressTypes.Add(addresstype);
             SelectedItem.AddressType = _addressTypeRepo.GetSingle(SelectedItem.AddressTypeFk);
         }
-        private void SaveCurrentCustomer()
+        public void SaveCurrentCustomer()
         {
             if(!ValidateCustomer()) return;
             SelectedItem.Password = ComputeSHA256Hash(SelectedItem.Password);
@@ -93,7 +93,7 @@ namespace SysInventory.LogMessages.ViewModels
             LoadAddressTypes();
             LoadAddresses();
         }
-        private void DeleteCustomer()
+        public void DeleteCustomer()
         {
             DataRepository.Delete(SelectedItem);
             LoadAllCustomers();
